@@ -13,6 +13,7 @@ public:
     void increaseLearnFactor();
     double derivative();
     void update();
+    double getWeight(size_t i);
     double getSum();
     double getGamma();
 private:
@@ -24,6 +25,7 @@ private:
     double sum;
     double learnF;
     double gamma;
-    void setWeights();
+    bool isBias;
+    void randomWeights();
     static size_t idCounter;
 };

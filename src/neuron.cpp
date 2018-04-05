@@ -1,33 +1,28 @@
 #include "neuron.h"
 #include <cmath>
 #include <algorithm>
+#include <iostream>
+#include <cassert>
 
 Neuron::Neuron(size_t inputCount, bool isBias, std::mt19937& rng)
     : id{idCounter++}
     , sum{0.0}
-    , gamma{0.0}
+    , gamma{1.0}
     , rng{rng}
     , dist{-1.0, 1.0}
     , learnF{0.001}
+    , isBias{isBias}
 {
-    if (isBias) {
-        ++inputCount;
+    for (size_t i = 0; i < inputCount; ++i) {
+        weights.push_back(dist(rng));
     }
 
-    weights.resize(inputCount);
-    setWeights();
-}
-
-void Neuron::setWeights()
-{
-    for (auto& it : weights) {
-        it = dist(rng);
-    }
+    assert(weights.size() == inputCount);
 }
 
 void Neuron::setInputs(std::vector<double> const& src)
 {
-    inputs = src;    
+    inputs = src;
 }
 
 void Neuron::setGamma(double val)
@@ -47,7 +42,7 @@ double Neuron::derivative()
 
 void Neuron::increaseLearnFactor()
 {
-    learnF += 10.0;
+    learnF += 0.0001;
 }
 
 double Neuron::getSum()
@@ -56,6 +51,9 @@ double Neuron::getSum()
 
     for (size_t i = 0; i < inputs.size(); ++i) {
         sum += inputs[i] * weights[i];
+        if (isBias) {
+       //     sum += inputs[i] / 2; // bias 0.5
+        }
     }
 
     return sum;
@@ -64,6 +62,11 @@ double Neuron::getSum()
 double Neuron::getGamma()
 {
     return gamma;
+}
+
+double Neuron::getWeight(size_t i)
+{
+    return weights[i];
 }
 
 void Neuron::update()

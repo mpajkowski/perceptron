@@ -19,7 +19,7 @@ void training(size_t epochs, std::vector<double>& inputLayer,
             h1 = inputLayer;
 
             forwardPropagation(hiddenLayers, h1, h2);
-            backpropOutput(outputLayer, h2, i, outputLearnSignals);
+            backpropOutput(outputLayer, h2, outputLearnSignals[i]);
             backpropHidden(hiddenLayers, outputLayer);
             updateNeurons(hiddenLayers, outputLayer);
         }
@@ -31,6 +31,7 @@ void training(size_t epochs, std::vector<double>& inputLayer,
                 }
             }
         }
+        std::cout << epochs << "\n";
     }
 }
 
@@ -46,8 +47,11 @@ std::pair<int, int> test(std::vector<double>& inputLayer,
     int negativeAnswers = 0;
 
     for (size_t i = 0; i < inputTestSignals.size(); ++i) {
-        std::copy(inputLayer.begin(), inputLayer.end(), h1.begin());
+        for (size_t j = 0; j < inputLayer.size(); ++j) {
+            inputLayer[j] = inputTestSignals[i][j];
+        }
 
+        h1 = inputLayer;
         forwardPropagation(hiddenLayers, h1, h2);
 
         for (size_t j = 0; j < outputLayer.size(); ++j) {
