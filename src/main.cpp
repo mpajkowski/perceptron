@@ -22,19 +22,18 @@ int main()
     // Populate layers
     for (size_t i = 0; i < INPUT_COUNT; ++i) {
         inputLayer.push_back(0.0);
-        outputLayer.emplace_back(INPUT_COUNT, true, rng);
+        outputLayer.emplace_back(NEURON_COUNT, true, rng);
     }
 
-    for (size_t i = 0; i < HIDDEN_LAYER_COUNT; ++i) {
-        hiddenLayers.emplace_back();
-        for (size_t j = 0; j< NEURON_COUNT; ++j) {
-            hiddenLayers[i].emplace_back(INPUT_COUNT, true, rng);
-        }
+    layer_t u1;
+    for (size_t i = 0; i < NEURON_COUNT; ++i) {
+        u1.emplace_back(1, true, rng);
     }
+    hiddenLayers.push_back(u1);
 
     // Populate data
     std::uniform_real_distribution<> dist100(0, 100.0);
-    for (size_t i = 0; i < INPUT_COUNT; ++i) {
+    for (size_t i = 0; i < 100; ++i) {
         inputTestSignals.emplace_back();
         outputTestSignals.emplace_back();
         inputLearnSignals.emplace_back();
@@ -48,10 +47,10 @@ int main()
         }
     }
 
-    h1.resize(NEURON_COUNT);
-    h2.resize(NEURON_COUNT);
+    h1.resize(100);
+    h2.resize(100);
 
-    training(100000, inputLayer, hiddenLayers, outputLayer,inputLearnSignals,
+    training(1000, inputLayer, hiddenLayers, outputLayer,inputLearnSignals,
              outputLearnSignals, h1, h2);
 
     auto testResult = test(inputLayer, hiddenLayers, outputLayer,

@@ -19,13 +19,14 @@ public:
 private:
     std::mt19937& rng;
     std::uniform_real_distribution<> dist;
-    size_t id;
     std::vector<double> inputs;
     std::vector<double> weights;
     double sum;
     double learnF;
+public:
     double gamma;
+private:
     bool isBias;
+    size_t inputCount;
     void randomWeights();
-    static size_t idCounter;
 };

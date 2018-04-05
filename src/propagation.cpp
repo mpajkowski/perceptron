@@ -28,16 +28,13 @@ void backpropOutput(layer_t& outputLayer, std::vector<double>& h2, std::vector<d
 
 void backpropHidden(std::vector<layer_t>& hiddenLayers, layer_t& outputLayer)
 {
-    for (auto& hiddenLayer : boost::adaptors::reverse(hiddenLayers)) {
-        for (size_t i = 0; i < hiddenLayer.size(); ++i) {
+    for (auto& layer : boost::adaptors::reverse(hiddenLayers)) {
+        for (size_t i = 0; i < layer.size(); ++i) {
             for (size_t j = 0; j < outputLayer.size(); ++j) {
-                auto tmp = hiddenLayer[i].getGamma();
-                hiddenLayer[i].setGamma(tmp + hiddenLayer[i].getGamma()
-                                        * outputLayer[j].getWeight(i));
+                layer[i].gamma += outputLayer[j].gamma * outputLayer[j].getWeight(i);
             }
-            auto tmp = hiddenLayer[i].getGamma();
-            hiddenLayer[i].setGamma(tmp * hiddenLayer[i].derivative());
-        }
+            layer[i].gamma = layer[i].gamma * layer[i].derivative();
+        } 
     }
 }
 

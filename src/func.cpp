@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <iomanip>
+#include <cassert>
 
 void training(size_t epochs, std::vector<double>& inputLayer,
               std::vector<layer_t>& hiddenLayers,
@@ -15,6 +16,7 @@ void training(size_t epochs, std::vector<double>& inputLayer,
 {
     while (epochs --> 0) {
         for (size_t i = 0; i < inputLearnSignals.size(); ++i) {
+            assert(inputLearnSignals[i].size() == inputLayer.size());
             inputLayer = inputLearnSignals[i];
             h1 = inputLayer;
 
@@ -32,7 +34,7 @@ void training(size_t epochs, std::vector<double>& inputLayer,
             }
         }
         std::cout << epochs << "\n";
-    }
+    }   
 }
 
 std::pair<int, int> test(std::vector<double>& inputLayer,
@@ -46,18 +48,17 @@ std::pair<int, int> test(std::vector<double>& inputLayer,
     int positiveAnswers = 0;
     int negativeAnswers = 0;
 
-    for (size_t i = 0; i < inputTestSignals.size(); ++i) {
-        for (size_t j = 0; j < inputLayer.size(); ++j) {
-            inputLayer[j] = inputTestSignals[i][j];
-        }
+    assert(inputTestSignals.size() == outputTestSignals.size());
 
+    for (size_t i = 0; i < inputTestSignals.size(); ++i) {
+        inputLayer = inputTestSignals[i];
         h1 = inputLayer;
         forwardPropagation(hiddenLayers, h1, h2);
 
         for (size_t j = 0; j < outputLayer.size(); ++j) {
             outputLayer[j].setInputs(h2);
             outputLayer[j].getSum();
-            double response = outputLayer[i].activate() * 10;
+            double response = outputLayer[j].activate() * 10;
             if (std::abs(outputTestSignals[i][j]
                          - response) <= 0.5) {
                 ++positiveAnswers;
