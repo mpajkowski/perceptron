@@ -1,2 +1,2 @@
 # perceptron
-Simple perceptron written in Rust.
+Simple perceptron written in C++
