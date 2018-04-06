@@ -9,7 +9,7 @@ Neuron::Neuron(size_t inputCount, bool isBias, std::mt19937& rng)
     , gamma{.0}
     , rng{rng}
     , dist{-1., 1.}
-    , learnF{.02}
+    , learnF{.01}
     , isBias{isBias}
     , inputCount{inputCount}
 {
@@ -45,7 +45,7 @@ double Neuron::derivative()
 
 void Neuron::increaseLearnFactor()
 {
-    learnF += .01;
+    learnF += .001;
 }
 
 double Neuron::getSum()
