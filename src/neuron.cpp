@@ -54,9 +54,6 @@ double Neuron::getSum()
 
     for (size_t i = 0; i < inputs.size(); ++i) {
         sum += inputs[i] * weights[i];
-        if (isBias) {
-           // sum += inputs[i]; // bias
-        }
     }
 
     return sum;

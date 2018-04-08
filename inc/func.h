@@ -5,7 +5,7 @@
 #include "propagation.h"
 
 constexpr size_t NEURON_COUNT = 10;
-constexpr size_t INPUT_COUNT = 1;
+constexpr size_t INPUT_COUNT = 4;
 
 void training(size_t epochs, std::vector<double>& inputLayer,
               std::vector<layer_t>& hiddenLayers,

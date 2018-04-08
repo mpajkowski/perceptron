@@ -4,18 +4,20 @@
 #include <random>
 #include <iostream>
 
-std::vector<double> inputLayer;
-std::vector<layer_t> hiddenLayers;
-layer_t outputLayer;
-std::vector<std::vector<double>> inputLearnSignals;
-std::vector<std::vector<double>> outputLearnSignals;
-std::vector<std::vector<double>> inputTestSignals;
-std::vector<std::vector<double>> outputTestSignals;
-std::vector<double> h1;
-std::vector<double> h2;
-
 int main()
 {
+    std::vector<double> inputLayer;
+    std::vector<layer_t> hiddenLayers;
+    layer_t outputLayer;
+
+    std::vector<std::vector<double>> inputLearnSignals;
+    std::vector<std::vector<double>> outputLearnSignals;
+    std::vector<std::vector<double>> inputTestSignals;
+    std::vector<std::vector<double>> outputTestSignals;
+
+    std::vector<double> h1;
+    std::vector<double> h2;
+
     std::mt19937 rng;
     rng.seed(std::random_device{}());
 
@@ -33,8 +35,8 @@ int main()
 
     // Populate data
     std::uniform_real_distribution<> dist100(0, 100.0);
-    std::uniform_real_distribution<> dist200(0, 200.0);
-    for (size_t i = 0; i < 1000; ++i) {
+
+    for (size_t i = 0; i < 100; ++i) {
         inputTestSignals.emplace_back();
         outputTestSignals.emplace_back();
         inputLearnSignals.emplace_back();
@@ -51,7 +53,7 @@ int main()
     h1.resize(100);
     h2.resize(100);
 
-    training(4000, inputLayer, hiddenLayers, outputLayer,inputLearnSignals,
+    training(6000, inputLayer, hiddenLayers, outputLayer,inputLearnSignals,
              outputLearnSignals, h1, h2);
 
     auto testResult = test(inputLayer, hiddenLayers, outputLayer,

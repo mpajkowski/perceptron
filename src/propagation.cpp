@@ -22,7 +22,7 @@ void backpropOutput(layer_t& outputLayer, std::vector<double>& h2, std::vector<d
     for (size_t i = 0; i < outputLayer.size(); ++i) {
         outputLayer[i].setInputs(h2);
         outputLayer[i].getSum();
-        outputLayer[i].setGamma(((trainingSet[i] / 10) - outputLayer[i].activate()) * outputLayer[i].derivative());
+        outputLayer[i].setGamma(((trainingSet[i] / 100) - outputLayer[i].activate()) * outputLayer[i].derivative());
     }
 }
 

@@ -54,13 +54,14 @@ std::pair<int, int> test(std::vector<double>& inputLayer,
         inputLayer = inputTestSignals[i];
         h1 = inputLayer;
         forwardPropagation(hiddenLayers, h1, h2);
-
+        
+        std::cout << "==================================================\n";
         for (size_t j = 0; j < outputLayer.size(); ++j) {
             outputLayer[j].setInputs(h2);
             outputLayer[j].getSum();
-            double response = outputLayer[j].activate() * 10;
+            double response = outputLayer[j].activate() * 100;
             if (std::abs(outputTestSignals[i][j]
-                         - response) <= 0.5) {
+                         - response) <= 0.3) {
                 ++positiveAnswers;
             }
             else
