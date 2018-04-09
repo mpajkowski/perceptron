@@ -6,12 +6,10 @@
 
 Neuron::Neuron(size_t inputCount, bool isBias, std::mt19937& rng)
     : sum{.0}
-    , delta{.0}
+    , delta{.1}
     , rng{rng}
-    , dist{-1., 1.}
-    , learnF{.01}
-    , isBias{isBias}
-    , inputCount{inputCount}
+    , dist{-.9, .9}
+    , learnF{.02}
 {
     for (size_t i = 0; i < inputCount; ++i) {
         weights.push_back(dist(rng));
@@ -32,7 +30,7 @@ void Neuron::setDelta(double val)
 
 void Neuron::increaseLearnFactor()
 {
-    learnF += .0004;
+    learnF += .001;
 }
 
 double Neuron::getSum()

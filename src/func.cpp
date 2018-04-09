@@ -76,6 +76,9 @@ void training(size_t epochs, std::vector<double>& inputLayer,
             regularTest();
         }
     }
+    std::cout << "Learning ended!\n";
+    regularTest();
+    regularTest();
     regularTest();
 }
 

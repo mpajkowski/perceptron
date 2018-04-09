@@ -25,7 +25,5 @@ private:
 public:
     double delta;
 private:
-    bool isBias;
-    size_t inputCount;
     void randomWeights();
 };

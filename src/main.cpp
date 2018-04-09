@@ -22,16 +22,18 @@ int main()
     rng.seed(std::random_device{}());
 
     // Populate layers
-    
-    // 1  x  4  x  4  x  1 
+    // Maybe that't time to write sume nice Net class, huh TODO
+    // 1  x  60 x  50  x  1
     //       *     *
-    // *     *     *     *
+    // *     *     *      *    x 2200
     //       *     *
-    //       *   
+    //       *     *
+    //       *     *
+    //       *
     // i  hl1 hl2  o
-    
-    int hl1Size = 40;
-    int hl2Size = 30;
+
+    int hl1Size = 60;
+    int hl2Size = 50;
 
     for (size_t i = 0; i < INPUT_COUNT; ++i) {
         inputLayer.push_back(0.0);
@@ -51,5 +53,5 @@ int main()
     hiddenLayers.push_back(hl2);
 
     adjustHelpers(inputLayer, hiddenLayers, outputLayer, h1, h2);
-    training(2000, inputLayer, hiddenLayers, outputLayer, h1, h2, rng);
+    training(2200, inputLayer, hiddenLayers, outputLayer, h1, h2, rng);
 }
