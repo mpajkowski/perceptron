@@ -6,7 +6,7 @@
 
 Neuron::Neuron(size_t inputCount, bool isBias, std::mt19937& rng)
     : sum{.0}
-    , gamma{.0}
+    , delta{.0}
     , rng{rng}
     , dist{-1., 1.}
     , learnF{.01}
@@ -17,51 +17,41 @@ Neuron::Neuron(size_t inputCount, bool isBias, std::mt19937& rng)
         weights.push_back(dist(rng));
     }
 
-    assert(weights.size() == inputCount);
     inputs.resize(inputCount);
 }
 
 void Neuron::setInputs(std::vector<double> const& src)
 {
-    for (size_t i = 0; i < inputCount; ++i) {
-        inputs[i] = src[i];
-    }
+    inputs = src;
 }
 
-void Neuron::setGamma(double val)
+void Neuron::setDelta(double val)
 {
-    gamma = val;
-}
-
-double Neuron::activate()
-{
-    return 1. / (1 + exp(-sum));
-}
-
-double Neuron::derivative()
-{
-    return activate() * (1 - activate());
+    delta = val;
 }
 
 void Neuron::increaseLearnFactor()
 {
-    learnF += .001;
+    learnF += .0004;
 }
 
 double Neuron::getSum()
+{
+    return sum;
+}
+
+void Neuron::updateSum()
 {
     sum = .0;
 
     for (size_t i = 0; i < inputs.size(); ++i) {
         sum += inputs[i] * weights[i];
     }
-
-    return sum;
 }
 
-double Neuron::getGamma()
+double Neuron::getDelta()
 {
-    return gamma;
+    return delta;
 }
 
 double Neuron::getWeight(size_t i)
@@ -72,6 +62,6 @@ double Neuron::getWeight(size_t i)
 void Neuron::update()
 {
     for (size_t i = 0; i < inputs.size(); ++i) {
-        weights[i] += gamma * learnF * inputs[i];
+        weights[i] += delta * learnF * inputs[i];
     }
 }

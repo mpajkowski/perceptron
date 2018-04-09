@@ -22,43 +22,34 @@ int main()
     rng.seed(std::random_device{}());
 
     // Populate layers
+    
+    // 1  x  4  x  4  x  1 
+    //       *     *
+    // *     *     *     *
+    //       *     *
+    //       *   
+    // i  hl1 hl2  o
+    
+    int hl1Size = 40;
+    int hl2Size = 30;
+
     for (size_t i = 0; i < INPUT_COUNT; ++i) {
         inputLayer.push_back(0.0);
-        outputLayer.emplace_back(NEURON_COUNT, true, rng);
+        outputLayer.emplace_back(hl2Size, true, rng);
     }
 
-    layer_t u1;
-    for (size_t i = 0; i < NEURON_COUNT; ++i) {
-        u1.emplace_back(NEURON_COUNT, true, rng);
-    }
-    hiddenLayers.push_back(u1);
-
-    // Populate data
-    std::uniform_real_distribution<> dist100(0, 100.0);
-
-    for (size_t i = 0; i < 100; ++i) {
-        inputTestSignals.emplace_back();
-        outputTestSignals.emplace_back();
-        inputLearnSignals.emplace_back();
-        outputLearnSignals.emplace_back();
-
-        for (size_t j = 0; j < INPUT_COUNT; ++j) {
-            inputLearnSignals[i].emplace_back(dist100(rng));
-            outputLearnSignals[i].emplace_back(std::sqrt(inputLearnSignals[i][j]));
-            inputTestSignals[i].emplace_back(dist100(rng));
-            outputTestSignals[i].emplace_back(std::sqrt(inputTestSignals[i][j]));
-        }
+    layer_t hl1, hl2;
+    for (size_t i = 0; i < hl1Size; ++i) {
+        hl1.emplace_back(INPUT_COUNT, true, rng);
     }
 
-    h1.resize(100);
-    h2.resize(100);
+    for (size_t i = 0; i < hl2Size; ++i) {
+        hl2.emplace_back(hl1Size, true, rng);
+    }
 
-    training(6000, inputLayer, hiddenLayers, outputLayer,inputLearnSignals,
-             outputLearnSignals, h1, h2);
+    hiddenLayers.push_back(hl1);
+    hiddenLayers.push_back(hl2);
 
-    auto testResult = test(inputLayer, hiddenLayers, outputLayer,
-                           inputTestSignals, outputTestSignals,
-                           h1, h2);
-
-    std::cout << "Good: " << testResult.first << ", Bad: " << testResult.second << std::endl;
+    adjustHelpers(inputLayer, hiddenLayers, outputLayer, h1, h2);
+    training(2000, inputLayer, hiddenLayers, outputLayer, h1, h2, rng);
 }

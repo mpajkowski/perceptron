@@ -6,6 +6,7 @@ add_executable (perceptron src/main.cpp
                            src/neuron.cpp
                            src/propagation.cpp
                            src/func.cpp
+                           src/activationFunction.cpp
 )
 
 find_package(Boost 1.36.0)
@@ -15,4 +16,4 @@ endif()
 
 target_include_directories (perceptron PUBLIC inc)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
-#set (CMAKE_BUILD_TYPE DEBUG)
+set (CMAKE_BUILD_TYPE DEBUG)
