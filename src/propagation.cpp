@@ -2,7 +2,6 @@
 #include "activationFunction.h"
 
 #include <algorithm>
-#include <boost/range/adaptor/reversed.hpp>
 #include <cassert>
 
 void forwardPropagation(std::vector<layer_t>& hiddenLayers, std::vector<double>& h1, std::vector<double>& h2)
