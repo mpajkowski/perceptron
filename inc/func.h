@@ -2,9 +2,18 @@
 
 #include <cassert>
 #include <vector>
+#include <functional>
 #include "propagation.h"
 
 constexpr size_t INPUT_COUNT = 1;
+
+using dataset_t = std::vector<std::vector<double>>;
+
+std::pair<dataset_t, dataset_t>
+createDataset(double rangeMin, double rangeMax,
+              size_t setSize, size_t inputCount,
+              std::mt19937& rng,
+              std::function<double(double)> callback);
 
 void adjustHelpers(std::vector<double>& inputLayer,
                    std::vector<layer_t>& hiddenLayers,

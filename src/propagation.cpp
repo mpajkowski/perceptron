@@ -30,13 +30,21 @@ void backpropOutput(layer_t& outputLayer, std::vector<double>& h2, std::vector<d
 
 void backpropHidden(std::vector<layer_t>& hiddenLayers, layer_t& outputLayer)
 {
-    for (auto& layer : boost::adaptors::reverse(hiddenLayers)) {
-        for (size_t i = 0; i < layer.size(); ++i) {
-            for (size_t j = 0; j < outputLayer.size(); ++j) {
-                layer[i].delta += outputLayer[j].delta * outputLayer[j].getWeight(i);
+    size_t i = hiddenLayers.size() - 1;
+    for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
+        for (size_t k = 0; k < outputLayer.size(); k++) {
+            hiddenLayers[i][j].delta += outputLayer[k].delta * outputLayer[k].getWeight(j);
+        }
+        hiddenLayers[i][j].delta = hiddenLayers[i][j].delta * sigmoid::derivative(hiddenLayers[i][j].getSum());
+    }
+
+    while (i --> 0) {
+        for (size_t j = 0;j<hiddenLayers[i].size();j++) {
+            for (size_t k = 0; k < hiddenLayers[i + 1].size(); k++) {
+                hiddenLayers[i][j].delta += hiddenLayers[i + 1][k].delta * hiddenLayers[i + 1][k].getWeight(j);
             }
-            layer[i].delta = layer[i].delta * sigmoid::derivative(layer[i].getSum());
-        } 
+            hiddenLayers[i][j].delta *= sigmoid::derivative(hiddenLayers[i][j].getSum());
+        }
     }
 }
 

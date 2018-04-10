@@ -33,7 +33,7 @@ void Neuron::increaseLearnFactor()
     learnF += .001;
 }
 
-double Neuron::getSum()
+double& Neuron::getSum()
 {
     return sum;
 }

@@ -7,7 +7,27 @@
 #include <iomanip>
 #include <cassert>
 #include <algorithm>
-#include <functional>
+
+std::pair<dataset_t, dataset_t>
+createDataset(double rangeMin, double rangeMax,
+              size_t setSize, size_t inputCount,
+              std::mt19937& rng,
+              std::function<double(double)> callback)
+{
+    dataset_t input(setSize);
+    dataset_t output(setSize);
+
+    std::uniform_real_distribution<> dist(rangeMin, rangeMax);
+
+    for (size_t i = 0; i < setSize; ++i) {
+        for (size_t j = 0; j < inputCount; ++j) {
+            input[i].emplace_back(dist(rng));
+            output[i].emplace_back(callback(input[i][j]));
+        }
+    }
+
+    return std::make_pair(input, output);
+}
 
 void adjustHelpers(std::vector<double>& inputLayer,
                    std::vector<layer_t>& hiddenLayers,
@@ -27,6 +47,8 @@ void adjustHelpers(std::vector<double>& inputLayer,
     auto maxVal = std::max_element(s.begin(), s.end());
     h1.resize(*maxVal);
     h2.resize(*maxVal);
+    std::fill(h1.begin(), h1.end(), .0);
+    std::fill(h2.begin(), h2.end(), .0);
 }
 
 void training(size_t epochs, std::vector<double>& inputLayer,
@@ -42,19 +64,7 @@ void training(size_t epochs, std::vector<double>& inputLayer,
         std::cout << "Good: " << t.first << ", Bad: " << t.second << "\n";
     };
     
-    std::uniform_real_distribution<> dist100(0, 100.0);
-    std::vector<std::vector<double>> inputLearnSignals;
-    std::vector<std::vector<double>> outputLearnSignals;
-
-    for (size_t i = 0; i < 1000; ++i) {
-        inputLearnSignals.emplace_back();
-        outputLearnSignals.emplace_back();
-
-        for (size_t j = 0; j < INPUT_COUNT; ++j) {
-            inputLearnSignals[i].emplace_back(dist100(rng));
-            outputLearnSignals[i].emplace_back(std::sqrt(inputLearnSignals[i][j]));
-        }
-    }
+    auto [inputLearnSignals, outputLearnSignals] = createDataset(0., 100., 1000, INPUT_COUNT, rng, sqrt);
 
     while (epochs --> 0) {
         for (size_t i = 0; i < inputLearnSignals.size(); ++i) {
@@ -92,19 +102,7 @@ std::pair<int, int> test(std::vector<double>& inputLayer,
     int positiveAnswers = 0;
     int negativeAnswers = 0;
 
-    std::uniform_real_distribution<> dist100(0, 100.0);
-    std::vector<std::vector<double>> inputTestSignals;
-    std::vector<std::vector<double>> outputTestSignals;
-
-        for (size_t i = 0; i < 1000; ++i) {
-        inputTestSignals.emplace_back();
-        outputTestSignals.emplace_back();
-
-        for (size_t j = 0; j < INPUT_COUNT; ++j) {
-            inputTestSignals[i].emplace_back(dist100(rng));
-            outputTestSignals[i].emplace_back(std::sqrt(inputTestSignals[i][j]));
-        }
-    }
+    auto [inputTestSignals, outputTestSignals] = createDataset(0., 100., 1000, INPUT_COUNT, rng, sqrt);
 
     for (size_t i = 0; i < inputTestSignals.size(); ++i) {
         inputLayer = inputTestSignals[i];
@@ -118,18 +116,14 @@ std::pair<int, int> test(std::vector<double>& inputLayer,
             double estimator = outputTestSignals[i][j];
             double response = sigmoid::function(outputLayer[j].getSum()) * 10;
             double error = estimator - response;
-            double mse = pow((estimator - response), 2);
 
-            if (mse < 0.25) {
+            if (std::abs(error) < 0.5) {
                 ++positiveAnswers;
             }
             else
             {
                 ++negativeAnswers;
             }
-//            std::cout << "Wanted: "<< std::setw(7) << estimator << "\tResponse: " << std::setw(7) << response
-//                << "\tAccuracy: " << std::setw(7) << mse << "\n";
-
         }
     }
 

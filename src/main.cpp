@@ -10,11 +10,6 @@ int main()
     std::vector<layer_t> hiddenLayers;
     layer_t outputLayer;
 
-    std::vector<std::vector<double>> inputLearnSignals;
-    std::vector<std::vector<double>> outputLearnSignals;
-    std::vector<std::vector<double>> inputTestSignals;
-    std::vector<std::vector<double>> outputTestSignals;
-
     std::vector<double> h1;
     std::vector<double> h2;
 
@@ -23,7 +18,7 @@ int main()
 
     // Populate layers
     // Maybe that't time to write sume nice Net class, huh TODO
-    // 1  x  60 x  50  x  1
+    // 1  x  6 x  5  x  1
     //       *     *
     // *     *     *      *    x 2200
     //       *     *

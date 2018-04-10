@@ -13,7 +13,7 @@ public:
     void updateSum();
     void update();
     double getWeight(size_t i);
-    double getSum();
+    double& getSum();
     double getDelta();
 private:
     std::mt19937& rng;
