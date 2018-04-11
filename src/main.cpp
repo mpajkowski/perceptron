@@ -3,9 +3,43 @@
 
 #include <random>
 #include <iostream>
+#include <boost/program_options.hpp>
 
-int main()
+int main(int argc, char* argv[])
 {
+    namespace po = boost::program_options;
+    std::vector<size_t> layerConfiguration;
+
+    po::options_description desc("Options:");
+    desc.add_options()
+        ("help,h", "prints this help message")
+        ("configuration,c", po::value<std::vector<size_t>>()->multitoken(),
+             "specifies network configuration, i.e. 4 3 4")
+        ("with-bias,b", "this option toggles on bias input for every neuron in network");
+
+    po::variables_map vm;
+////// TODO FIX
+    try {
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::notify(vm);
+
+        if (!vm["configuration"].empty()) {
+            layerConfiguration = vm["configuration"].as<std::vector<size_t>>();
+            std::cout << "fajno\n";
+            for (auto& elem : layerConfiguration) {
+                std::cout << elem << std::endl;
+            }
+            std::cout << "Size: " << layerConfiguration.size() << std::endl;
+        } else {
+            std::cout << "niefajno";
+        }
+    }
+    catch (po::error& e) {
+        std::cerr << "Error " << e.what() << std::endl;
+        std::cerr << desc << std::endl;
+        return 1;
+    }
+
     std::vector<double> inputLayer;
     std::vector<layer_t> hiddenLayers;
     layer_t outputLayer;
@@ -17,35 +51,39 @@ int main()
     rng.seed(std::random_device{}());
 
     // Populate layers
-    // Maybe that't time to write sume nice Net class, huh TODO
-    // 1  x  6 x  5  x  1
-    //       *     *
-    // *     *     *      *    x 2200
-    //       *     *
-    //       *     *
-    //       *     *
-    //       *
-    // i  hl1 hl2  o
-
-    int hl1Size = 60;
-    int hl2Size = 50;
-
-    for (size_t i = 0; i < INPUT_COUNT; ++i) {
-        inputLayer.push_back(0.0);
-        outputLayer.emplace_back(hl2Size, true, rng);
+    for (size_t i = 0; i < layerConfiguration[0]; ++i) {
+        inputLayer.emplace_back(.0);
+        std::cout << layerConfiguration[0];
     }
 
-    layer_t hl1, hl2;
-    for (size_t i = 0; i < hl1Size; ++i) {
-        hl1.emplace_back(INPUT_COUNT, true, rng);
+    bool populateHidden = layerConfiguration.size() > 2;
+    
+    if (populateHidden) {
+        for (size_t i = 1; i < layerConfiguration.back() - 2; ++i) {
+            hiddenLayers.emplace_back();
+            for (size_t j = 0; j < layerConfiguration[i]; ++j) {
+                hiddenLayers[i - 1].emplace_back(i == 1 ? inputLayer.size()
+                                                        : hiddenLayers[i - 2].size(),
+                                                 true,
+                                                 rng);
+            }
+        }
     }
 
-    for (size_t i = 0; i < hl2Size; ++i) {
-        hl2.emplace_back(hl1Size, true, rng);
+    for (size_t i = 0; i < layerConfiguration.back(); ++i) {
+        outputLayer.emplace_back(populateHidden ? hiddenLayers.back().size()
+                                                : inputLayer.size(),
+                                 true,
+                                 rng);
+    }
+    
+    std::cout << inputLayer.size() << std::endl;
+
+    for (auto& layer : hiddenLayers) {
+        std::cout << layer.size() << std::endl;
     }
 
-    hiddenLayers.push_back(hl1);
-    hiddenLayers.push_back(hl2);
+    std::cout << outputLayer.size();
 
     adjustHelpers(inputLayer, hiddenLayers, outputLayer, h1, h2);
     training(2200, inputLayer, hiddenLayers, outputLayer, h1, h2, rng);

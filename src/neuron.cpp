@@ -23,21 +23,6 @@ void Neuron::setInputs(std::vector<double> const& src)
     inputs = src;
 }
 
-void Neuron::setDelta(double val)
-{
-    delta = val;
-}
-
-void Neuron::increaseLearnFactor()
-{
-    learnF += .001;
-}
-
-double& Neuron::getSum()
-{
-    return sum;
-}
-
 void Neuron::updateSum()
 {
     sum = .0;
@@ -45,16 +30,6 @@ void Neuron::updateSum()
     for (size_t i = 0; i < inputs.size(); ++i) {
         sum += inputs[i] * weights[i];
     }
-}
-
-double Neuron::getDelta()
-{
-    return delta;
-}
-
-double Neuron::getWeight(size_t i)
-{
-    return weights[i];
 }
 
 void Neuron::update()

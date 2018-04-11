@@ -80,7 +80,7 @@ void training(size_t epochs, std::vector<double>& inputLayer,
         if (!(epochs % 1000)) {
             for (auto& layer : hiddenLayers) {
                 for (auto& neuron : layer) {
-                    neuron.increaseLearnFactor();
+                    neuron.learnF += .001;
                 }
             }
             regularTest();
@@ -114,7 +114,7 @@ std::pair<int, int> test(std::vector<double>& inputLayer,
             outputLayer[j].updateSum();
 
             double estimator = outputTestSignals[i][j];
-            double response = sigmoid::function(outputLayer[j].getSum()) * 10;
+            double response = sigmoid::function(outputLayer[j].sum) * 10;
             double error = estimator - response;
 
             if (std::abs(error) < 0.5) {

@@ -14,6 +14,7 @@ if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
+target_link_libraries (perceptron "boost_program_options")
 target_include_directories (perceptron PUBLIC inc)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_BUILD_TYPE DEBUG)
