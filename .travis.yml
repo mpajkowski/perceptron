@@ -2,9 +2,11 @@ language: cpp
 compiler:
   - clang
 before_script:
+  - sudo apt-get update -qq
+  - sudo apt-get install libboost-thread-dev libboost-system-dev libboost-test-dev
   - mkdir build
   - cd build
   - cmake ..
 script:
   - make
-  - ./perceptron
+  - ./perceptron -c 1 8 7 1
