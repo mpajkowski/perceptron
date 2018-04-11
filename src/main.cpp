@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     po::options_description desc("Options:");
     desc.add_options()
         ("help,h", "prints this help message")
-        ("configuration,c", po::value<std::vector<size_t>>()->multitoken(),
+        ("configuration,c", po::value<std::vector<size_t>>()->multitoken()->required(),
              "specifies network configuration, i.e. 4 3 4")
         ("with-bias,b", "this option toggles on bias input for every neuron in network");
 
@@ -25,13 +25,6 @@ int main(int argc, char* argv[])
 
         if (!vm["configuration"].empty()) {
             layerConfiguration = vm["configuration"].as<std::vector<size_t>>();
-            std::cout << "fajno\n";
-            for (auto& elem : layerConfiguration) {
-                std::cout << elem << std::endl;
-            }
-            std::cout << "Size: " << layerConfiguration.size() << std::endl;
-        } else {
-            std::cout << "niefajno";
         }
     }
     catch (po::error& e) {
@@ -52,14 +45,13 @@ int main(int argc, char* argv[])
 
     // Populate layers
     for (size_t i = 0; i < layerConfiguration[0]; ++i) {
-        inputLayer.emplace_back(.0);
-        std::cout << layerConfiguration[0];
+        inputLayer.emplace_back();
     }
 
     bool populateHidden = layerConfiguration.size() > 2;
     
     if (populateHidden) {
-        for (size_t i = 1; i < layerConfiguration.back() - 2; ++i) {
+        for (size_t i = 1; i < layerConfiguration.size() - 1; ++i) {
             hiddenLayers.emplace_back();
             for (size_t j = 0; j < layerConfiguration[i]; ++j) {
                 hiddenLayers[i - 1].emplace_back(i == 1 ? inputLayer.size()
@@ -77,14 +69,6 @@ int main(int argc, char* argv[])
                                  rng);
     }
     
-    std::cout << inputLayer.size() << std::endl;
-
-    for (auto& layer : hiddenLayers) {
-        std::cout << layer.size() << std::endl;
-    }
-
-    std::cout << outputLayer.size();
-
     adjustHelpers(inputLayer, hiddenLayers, outputLayer, h1, h2);
     training(2200, inputLayer, hiddenLayers, outputLayer, h1, h2, rng);
 }

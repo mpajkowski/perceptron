@@ -20,7 +20,9 @@ Neuron::Neuron(size_t inputCount, bool isBias, std::mt19937& rng)
 
 void Neuron::setInputs(std::vector<double> const& src)
 {
-    inputs = src;
+    for (size_t i = 0; i < inputs.size(); ++i) {
+        inputs[i] = src[i];
+    }
 }
 
 void Neuron::updateSum()
