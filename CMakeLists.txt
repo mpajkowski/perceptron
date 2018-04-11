@@ -4,9 +4,8 @@ set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 add_executable (perceptron src/main.cpp
                            src/neuron.cpp
-                           src/propagation.cpp
                            src/func.cpp
-                           src/activationFunction.cpp
+                           src/net.cpp
 )
 
 find_package(Boost 1.36.0)
