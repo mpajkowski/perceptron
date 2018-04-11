@@ -4,6 +4,7 @@
 
 #include <boost/program_options.hpp>
 #include <iostream>
+#include <cstdlib>
 
 Net::Net(int argc, char* argv[])
 {
@@ -35,6 +36,7 @@ void Net::init(int argc, char* argv[])
     catch (po::error& e) {
         std::cerr << "Error " << e.what() << std::endl;
         std::cerr << desc << std::endl;
+        exit(1);
     }
 
     rng.seed(std::random_device{}());

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "propagation.h"
 #include <random>
 #include <vector>
 #include <functional>

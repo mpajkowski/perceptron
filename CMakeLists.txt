@@ -8,12 +8,13 @@ add_executable (perceptron src/main.cpp
                            src/net.cpp
 )
 
-find_package(Boost 1.36.0)
+find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
-target_link_libraries (perceptron "boost_program_options")
+target_link_libraries (perceptron Boost::program_options)
+
 target_include_directories (perceptron PUBLIC inc)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_BUILD_TYPE DEBUG)
