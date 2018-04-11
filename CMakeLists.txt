@@ -16,5 +16,6 @@ endif()
 target_link_libraries (perceptron Boost::program_options)
 
 target_include_directories (perceptron PUBLIC inc)
+target_include_directories (perceptron PUBLIC 3rdParty/fast-cpp-csv-parser)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_BUILD_TYPE DEBUG)

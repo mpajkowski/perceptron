@@ -5,12 +5,13 @@
 #include <functional>
 
 using dataset_t = std::vector<std::vector<double>>;
+using datasetPair_t =
+    std::pair<dataset_t, dataset_t>;
 
-std::pair<dataset_t, dataset_t>
-createDataset(double rangeMin, double rangeMax,
-              size_t setSize, size_t inputCount,
-              std::mt19937& rng,
-              std::function<double(double)> callback);
+datasetPair_t createDataset(double rangeMin, double rangeMax,
+                            size_t setSize, size_t inputCount,
+                            std::mt19937& rng,
+                            std::function<double(double)> callback);
 
 namespace sigmoid {
 double function(double x);

@@ -3,11 +3,11 @@
 #include <algorithm>
 #include <random>
 
-std::pair<dataset_t, dataset_t>
-createDataset(double rangeMin, double rangeMax,
-              size_t setSize, size_t inputCount,
-              std::mt19937& rng,
-              std::function<double(double)> callback)
+
+datasetPair_t createDataset(double rangeMin, double rangeMax,
+                            size_t setSize, size_t inputCount,
+                            std::mt19937& rng,
+                            std::function<double(double)> callback)
 {
     dataset_t input(setSize);
     dataset_t output(setSize);

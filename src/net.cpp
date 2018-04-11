@@ -7,6 +7,7 @@
 #include <cstdlib>
 
 Net::Net(int argc, char* argv[])
+    : trainingEpochs{2200}
 {
     init(argc, argv);
 }
@@ -20,7 +21,8 @@ void Net::init(int argc, char* argv[])
     desc.add_options()
         ("help,h", "prints this help message")
         ("configuration,c", po::value<std::vector<size_t>>()->multitoken()->required(),
-             "specifies network configuration, i.e. 4 3 4")
+             "specifies network layers configuration, i.e. 4 3 4")
+        ("epochs,e", po::value<size_t>(&trainingEpochs), "specifies number of epochs for training, default: 2200")
         ("with-bias,b", "this option toggles on bias input for every neuron in network");
 
     po::variables_map vm;
@@ -40,14 +42,18 @@ void Net::init(int argc, char* argv[])
     }
 
     rng.seed(std::random_device{}());
+    populateLayers(layerConfiguration);
+    adjustHelpers();
+}
 
-    // Populate layers
+void Net::populateLayers(std::vector<size_t> const& layerConfiguration)
+{
     for (size_t i = 0; i < layerConfiguration[0]; ++i) {
         inputLayer.emplace_back();
     }
 
     bool populateHidden = layerConfiguration.size() > 2;
-    
+
     if (populateHidden) {
         for (size_t i = 1; i < layerConfiguration.size() - 1; ++i) {
             hiddenLayers.emplace_back();
@@ -66,8 +72,6 @@ void Net::init(int argc, char* argv[])
                                  true,
                                  rng);
     }
-    
-    adjustHelpers();
 }
 
 void Net::adjustHelpers()
@@ -88,18 +92,18 @@ void Net::adjustHelpers()
     std::fill(_2.begin(), _2.end(), .0);
 }
 
-void Net::training(size_t epochs)
+void Net::training()
 {
-    auto regularTest = [&]() 
+    auto regularTest = [this]()
     {
         auto t = test();
         std::cout << "Good: " << t.first << ", Bad: " << t.second << "\n";
     };
-   
-    auto [inputLearnSignals, outputLearnSignals] = createDataset(0., 100., 1000,
-            inputLayer.size(), rng, [](double x) { return std::sqrt(x); });
 
-    while (epochs --> 0) {
+    auto [inputLearnSignals, outputLearnSignals] = createDataset(0., 1., 100,
+            inputLayer.size(), rng, [](double x) { return x; });
+
+    while (trainingEpochs --> 0) {
         for (size_t i = 0; i < inputLearnSignals.size(); ++i) {
             inputLayer = inputLearnSignals[i];
             _1 = inputLayer;
@@ -109,7 +113,7 @@ void Net::training(size_t epochs)
             updateNeurons();
         }
 
-        if (!(epochs % 1000)) {
+        if (!(trainingEpochs % 1000)) {
             for (auto& layer : hiddenLayers) {
                 for (auto& neuron : layer) {
                     neuron.learnF += .001;
@@ -129,8 +133,8 @@ std::pair<int, int> Net::test()
     int positiveAnswers = 0;
     int negativeAnswers = 0;
 
-    auto [inputTestSignals, outputTestSignals] = createDataset(0., 100., 1000,
-            inputLayer.size(), rng, [](double x) { return std::sqrt(x); });
+    auto [inputTestSignals, outputTestSignals] = createDataset(0., 1., 100,
+            inputLayer.size(), rng, [](double x) { return x; });
 
     for (size_t i = 0; i < inputTestSignals.size(); ++i) {
         inputLayer = inputTestSignals[i];
