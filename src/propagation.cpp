@@ -34,7 +34,7 @@ void backpropHidden(std::vector<layer_t>& hiddenLayers, layer_t& outputLayer)
         for (size_t k = 0; k < outputLayer.size(); k++) {
             hiddenLayers[i][j].delta += outputLayer[k].delta * outputLayer[k].getWeight(j);
         }
-        hiddenLayers[i][j].delta = hiddenLayers[i][j].delta * sigmoid::derivative(hiddenLayers[i][j].getSum());
+        hiddenLayers[i][j].delta *= sigmoid::derivative(hiddenLayers[i][j].getSum());
     }
 
     while (i --> 0) {
