@@ -17,12 +17,17 @@ void Net::init(int argc, char* argv[])
     namespace po = boost::program_options;
     std::vector<size_t> layerConfiguration;
 
+    double momentum = 0.2;
+    double learnF = 0.1;
+
     po::options_description desc("Options:");
     desc.add_options()
         ("help,h", "prints this help message")
         ("configuration,c", po::value<std::vector<size_t>>()->multitoken()->required(),
              "specifies network layers configuration, i.e. 4 3 4")
         ("epochs,e", po::value<size_t>(&trainingEpochs), "specifies number of epochs for training, default: 2200")
+        ("momentum,m", po::value<double>(&momentum), "specifies momentum factor, default: xD")
+        ("learning-rate,l", po::value<double>(&learnF), "specifies learning rate factor, default: 0.02")
         ("with-bias,b", "this option toggles on bias input for every neuron in network");
 
     po::variables_map vm;
@@ -42,11 +47,12 @@ void Net::init(int argc, char* argv[])
     }
 
     rng.seed(std::random_device{}());
-    populateLayers(layerConfiguration);
+    populateLayers(layerConfiguration, momentum, learnF);
     adjustHelpers();
 }
 
-void Net::populateLayers(std::vector<size_t> const& layerConfiguration)
+void Net::populateLayers(std::vector<size_t> const& layerConfiguration,
+                         double momentum, double learnF)
 {
     for (size_t i = 0; i < layerConfiguration[0]; ++i) {
         inputLayer.emplace_back();
@@ -61,6 +67,8 @@ void Net::populateLayers(std::vector<size_t> const& layerConfiguration)
                 hiddenLayers[i - 1].emplace_back(i == 1 ? inputLayer.size()
                                                         : hiddenLayers[i - 2].size(),
                                                  true,
+                                                 learnF,
+                                                 momentum,
                                                  rng);
             }
         }
@@ -70,6 +78,8 @@ void Net::populateLayers(std::vector<size_t> const& layerConfiguration)
         outputLayer.emplace_back(populateHidden ? hiddenLayers.back().size()
                                                 : inputLayer.size(),
                                  true,
+                                 learnF,
+                                 momentum,
                                  rng);
     }
 }
@@ -94,14 +104,14 @@ void Net::adjustHelpers()
 
 void Net::training()
 {
-    auto regularTest = [this]()
+    auto regularTest = [this]
     {
         auto t = test();
         std::cout << "Good: " << t.first << ", Bad: " << t.second << "\n";
     };
 
-    auto [inputLearnSignals, outputLearnSignals] = createDataset(0., 1., 100,
-            inputLayer.size(), rng, [](double x) { return x; });
+    auto [inputLearnSignals, outputLearnSignals] = createDataset(0., 100., 1000,
+            inputLayer.size(), rng, [](double x) { return sqrt(x); });
 
     while (trainingEpochs --> 0) {
         for (size_t i = 0; i < inputLearnSignals.size(); ++i) {
@@ -114,11 +124,6 @@ void Net::training()
         }
 
         if (!(trainingEpochs % 1000)) {
-            for (auto& layer : hiddenLayers) {
-                for (auto& neuron : layer) {
-                    neuron.learnF += .001;
-                }
-            }
             regularTest();
         }
     }
@@ -133,8 +138,8 @@ std::pair<int, int> Net::test()
     int positiveAnswers = 0;
     int negativeAnswers = 0;
 
-    auto [inputTestSignals, outputTestSignals] = createDataset(0., 1., 100,
-            inputLayer.size(), rng, [](double x) { return x; });
+    auto [inputTestSignals, outputTestSignals] = createDataset(0., 1., 1000,
+            inputLayer.size(), rng, [](double x) { return sqrt(x); });
 
     for (size_t i = 0; i < inputTestSignals.size(); ++i) {
         inputLayer = inputTestSignals[i];
@@ -179,7 +184,7 @@ void Net::backPropagation(std::vector<double> const& trainingSet)
     for (size_t i = 0; i < outputLayer.size(); ++i) {
         outputLayer[i].setInputs(_2);
         outputLayer[i].updateSum();
-        outputLayer[i].delta = ((trainingSet[i] / 10) - sigmoid::function(outputLayer[i].sum))
+        outputLayer[i].delta = ((trainingSet[i] / 10) - sigmoid::function(outputLayer[i].sum)) // / 10 - for sqrt range (0, 100)
           * sigmoid::derivative(outputLayer[i].sum);
     }
 
@@ -192,7 +197,7 @@ void Net::backPropagation(std::vector<double> const& trainingSet)
     }
 
     while (i --> 0) {
-        for (size_t j = 0;j<hiddenLayers[i].size();j++) {
+        for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
             for (size_t k = 0; k < hiddenLayers[i + 1].size(); k++) {
                 hiddenLayers[i][j].delta += hiddenLayers[i + 1][k].delta * hiddenLayers[i + 1][k].weights[j];
             }

@@ -14,7 +14,9 @@ public:
     std::pair<int, int> test();
 private:
     void init(int argc, char* argv[]);
-    void populateLayers(std::vector<size_t> const& layerConfiguration);
+    void populateLayers(std::vector<size_t> const& layerConfiguration,
+                        double momentum,
+                        double learnF);
     void forwardPropagation();
     void backPropagation(std::vector<double> const& trainingSet);
     void updateNeurons();
@@ -26,5 +28,6 @@ private:
     layer_t outputLayer;
     std::vector<double> _1;
     std::vector<double> _2;
+    std::vector<std::vector<double>> savedWeights;
     std::mt19937 rng;
 };
