@@ -4,28 +4,32 @@
 #include <iostream>
 #include <cassert>
 
-Neuron::Neuron(size_t inputCount, bool isBias, double learnF,
+Neuron::Neuron(size_t inputCount, bool isBiasNeuron, double learnF,
                double momentum, std::mt19937& rng)
     : sum{.0}
-    , delta{.0}
+    , error{.0}
     , rng{rng}
     , dist{-.5, .5}
     , learnF{learnF}
     , momentum{momentum}
+    , isBiasNeuron{isBiasNeuron}
 {
     for (size_t i = 0; i < inputCount; ++i) {
         weights.push_back(dist(rng));
     }
 
     inputs.resize(inputCount);
-    prevWeights.resize(inputs.size());
-    std::fill(prevWeights.begin(), prevWeights.end(), .0);
+
+    pWeights.resize(inputs.size());
+    std::fill(pWeights.begin(), pWeights.end(), .0);
 }
 
 void Neuron::setInputs(std::vector<double> const& src)
 {
-    for (size_t i = 0; i < inputs.size(); ++i) {
-        inputs[i] = src[i];
+    if (!isBiasNeuron) {
+        for (size_t i = 0; i < inputs.size(); ++i) {
+            inputs[i] = src[i];
+        }
     }
 }
 
@@ -41,8 +45,8 @@ void Neuron::updateSum()
 void Neuron::update()
 {
     for (size_t i = 0; i < inputs.size(); ++i) {
-        weights[i] = weights[i] + delta * learnF * inputs[i] + momentum * prevWeights[i];
-        prevWeights[i] = learnF * delta * inputs[i];
+        weights[i] = weights[i] + error * learnF * inputs[i] + momentum * pWeights[i];
+        pWeights[i] = learnF * error * inputs[i];
     }
-    delta = .0;
+  //  error = .0;
 }

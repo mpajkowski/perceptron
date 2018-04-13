@@ -66,7 +66,7 @@ void Net::populateLayers(std::vector<size_t> const& layerConfiguration,
             for (size_t j = 0; j < layerConfiguration[i]; ++j) {
                 hiddenLayers[i - 1].emplace_back(i == 1 ? inputLayer.size()
                                                         : hiddenLayers[i - 2].size(),
-                                                 true,
+                                                 false,
                                                  learnF,
                                                  momentum,
                                                  rng);
@@ -77,7 +77,7 @@ void Net::populateLayers(std::vector<size_t> const& layerConfiguration,
     for (size_t i = 0; i < layerConfiguration.back(); ++i) {
         outputLayer.emplace_back(populateHidden ? hiddenLayers.back().size()
                                                 : inputLayer.size(),
-                                 true,
+                                 false,
                                  learnF,
                                  momentum,
                                  rng);
@@ -102,6 +102,58 @@ void Net::adjustHelpers()
     std::fill(_2.begin(), _2.end(), .0);
 }
 
+void Net::forwardPropagation()
+{
+    for (auto& layer : hiddenLayers) {
+        for (size_t i = 0; i < layer.size(); ++i) {
+            layer[i].setInputs(_1);
+            layer[i].updateSum();
+            _2[i] = sigmoid::function(layer[i].sum);
+        }
+        _1 = _2;
+    }
+}
+
+void Net::backPropagation(std::vector<double> const& trainingSet)
+{
+    for (size_t i = 0; i < outputLayer.size(); ++i) {
+        outputLayer[i].setInputs(_2);
+        outputLayer[i].updateSum();
+        outputLayer[i].error = (trainingSet[i] - sigmoid::function(outputLayer[i].sum))
+          * sigmoid::derivative(outputLayer[i].sum);
+    }
+
+    size_t i = hiddenLayers.size() - 1;
+    for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
+        for (size_t k = 0; k < outputLayer.size(); k++) {
+            hiddenLayers[i][j].error += outputLayer[k].error * outputLayer[k].weights[j];
+        }
+        hiddenLayers[i][j].error *= sigmoid::derivative(hiddenLayers[i][j].sum);
+    }
+
+    while (i --> 0) {
+        for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
+            for (size_t k = 0; k < hiddenLayers[i + 1].size(); k++) {
+                hiddenLayers[i][j].error += hiddenLayers[i + 1][k].error * hiddenLayers[i + 1][k].weights[j];
+            }
+            hiddenLayers[i][j].error *= sigmoid::derivative(hiddenLayers[i][j].sum);
+        }
+    }
+}
+
+void Net::updateNeurons()
+{
+    for (auto& layer : hiddenLayers) {
+        for (auto& neuron : layer) {
+            neuron.update();
+        }
+    }
+
+    for (auto& neuron : outputLayer) {
+        neuron.update();
+    }
+}
+
 void Net::training()
 {
     auto regularTest = [this]
@@ -110,8 +162,8 @@ void Net::training()
         std::cout << "Good: " << t.first << ", Bad: " << t.second << "\n";
     };
 
-    auto [inputLearnSignals, outputLearnSignals] = createDataset(0., 100., 1000,
-            inputLayer.size(), rng, [](double x) { return sqrt(x); });
+    auto [inputLearnSignals, outputLearnSignals] =
+        createDataset(std::string{"../data/assign_in2out.csv"}, 4, 4, 4); 
 
     while (trainingEpochs --> 0) {
         for (size_t i = 0; i < inputLearnSignals.size(); ++i) {
@@ -138,83 +190,41 @@ std::pair<int, int> Net::test()
     int positiveAnswers = 0;
     int negativeAnswers = 0;
 
-    auto [inputTestSignals, outputTestSignals] = createDataset(0., 1., 1000,
-            inputLayer.size(), rng, [](double x) { return sqrt(x); });
+    auto [inputTestSignals, outputTestSignals] =
+        createDataset(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
 
     for (size_t i = 0; i < inputTestSignals.size(); ++i) {
         inputLayer = inputTestSignals[i];
         _1 = inputLayer;
         forwardPropagation();
 
+        int positiveInRow = 0;
+        int negativeInRow = 0;
+
+        std::cout << "-----\n";
         for (size_t j = 0; j < outputLayer.size(); ++j) {
             outputLayer[j].setInputs(_2);
             outputLayer[j].updateSum();
 
             double estimator = outputTestSignals[i][j];
-            double response = sigmoid::function(outputLayer[j].sum) * 10;
+            double response = sigmoid::function(outputLayer[j].sum);
             double error = estimator - response;
-
-            if (std::abs(error) < 0.5) {
-                ++positiveAnswers;
+            
+            if (error * error < 0.05) {
+                ++positiveInRow;
             }
             else
             {
-                ++negativeAnswers;
+                ++negativeInRow;
             }
+            std::cout << "estimator: " << estimator << ", response: " << response << std::endl;
+        }
+        if (positiveInRow == outputLayer.size()) {
+            ++positiveAnswers;
+        } else {
+            ++negativeAnswers;
         }
     }
 
     return std::make_pair(positiveAnswers, negativeAnswers);
-}
-
-void Net::forwardPropagation()
-{
-    for (auto& layer : hiddenLayers) {
-        for (size_t i = 0; i < layer.size(); ++i) {
-            layer[i].setInputs(_1);
-            layer[i].updateSum();
-            _2[i] = sigmoid::function(layer[i].sum);
-        }
-        _1 = _2;
-    }
-}
-
-void Net::backPropagation(std::vector<double> const& trainingSet)
-{
-    for (size_t i = 0; i < outputLayer.size(); ++i) {
-        outputLayer[i].setInputs(_2);
-        outputLayer[i].updateSum();
-        outputLayer[i].delta = ((trainingSet[i] / 10) - sigmoid::function(outputLayer[i].sum)) // / 10 - for sqrt range (0, 100)
-          * sigmoid::derivative(outputLayer[i].sum);
-    }
-
-    size_t i = hiddenLayers.size() - 1;
-    for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
-        for (size_t k = 0; k < outputLayer.size(); k++) {
-            hiddenLayers[i][j].delta += outputLayer[k].delta * outputLayer[k].weights[j];
-        }
-        hiddenLayers[i][j].delta *= sigmoid::derivative(hiddenLayers[i][j].sum);
-    }
-
-    while (i --> 0) {
-        for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
-            for (size_t k = 0; k < hiddenLayers[i + 1].size(); k++) {
-                hiddenLayers[i][j].delta += hiddenLayers[i + 1][k].delta * hiddenLayers[i + 1][k].weights[j];
-            }
-            hiddenLayers[i][j].delta *= sigmoid::derivative(hiddenLayers[i][j].sum);
-        }
-    }
-}
-
-void Net::updateNeurons()
-{
-    for (auto& layer : hiddenLayers) {
-        for (auto& neuron : layer) {
-            neuron.update();
-        }
-    }
-
-    for (auto& neuron : outputLayer) {
-        neuron.update();
-    }
 }

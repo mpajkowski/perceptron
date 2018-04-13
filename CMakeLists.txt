@@ -12,8 +12,10 @@ find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif()
-
 target_link_libraries (perceptron Boost::program_options)
+
+find_package(Threads)
+target_link_libraries (perceptron ${CMAKE_THREAD_LIBS_INIT})
 
 target_include_directories (perceptron PUBLIC inc)
 target_include_directories (perceptron PUBLIC 3rdParty/fast-cpp-csv-parser)
