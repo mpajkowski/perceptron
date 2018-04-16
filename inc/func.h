@@ -27,3 +27,4 @@ namespace relu {
 double function(double x);
 double derivative(double x);
 }
+

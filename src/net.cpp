@@ -8,6 +8,9 @@
 
 Net::Net(int argc, char* argv[])
     : trainingEpochs{2200}
+    , biasPresent{false}
+    , momentum{.8}
+    , learnF{.2}
 {
     init(argc, argv);
 }
@@ -17,18 +20,19 @@ void Net::init(int argc, char* argv[])
     namespace po = boost::program_options;
     std::vector<size_t> layerConfiguration;
 
-    double momentum = 0.2;
-    double learnF = 0.1;
-
     po::options_description desc("Options:");
     desc.add_options()
         ("help,h", "prints this help message")
         ("configuration,c", po::value<std::vector<size_t>>()->multitoken()->required(),
-             "specifies network layers configuration, i.e. 4 3 4")
-        ("epochs,e", po::value<size_t>(&trainingEpochs), "specifies number of epochs for training, default: 2200")
-        ("momentum,m", po::value<double>(&momentum), "specifies momentum factor, default: xD")
-        ("learning-rate,l", po::value<double>(&learnF), "specifies learning rate factor, default: 0.02")
-        ("with-bias,b", "this option toggles on bias input for every neuron in network");
+            "specifies network layers configuration, i.e. 4 3 4")
+        ("epochs,e", po::value<size_t>(&trainingEpochs),
+            "specifies number of epochs for training, default: 2200")
+        ("momentum,m", po::value<double>(&momentum),
+            "specifies momentum factor, default: xD")
+        ("learning-rate,l", po::value<double>(&learnF),
+            "specifies learning rate factor, default: 0.02")
+        ("with-bias,b", po::bool_switch(&biasPresent),
+            "this option toggles on bias (1.)");
 
     po::variables_map vm;
 
@@ -47,12 +51,10 @@ void Net::init(int argc, char* argv[])
     }
 
     rng.seed(std::random_device{}());
-    populateLayers(layerConfiguration, momentum, learnF);
-    adjustHelpers();
+    populateLayers(layerConfiguration);
 }
 
-void Net::populateLayers(std::vector<size_t> const& layerConfiguration,
-                         double momentum, double learnF)
+void Net::populateLayers(std::vector<size_t> const& layerConfiguration)
 {
     for (size_t i = 0; i < layerConfiguration[0]; ++i) {
         inputLayer.emplace_back();
@@ -66,9 +68,6 @@ void Net::populateLayers(std::vector<size_t> const& layerConfiguration,
             for (size_t j = 0; j < layerConfiguration[i]; ++j) {
                 hiddenLayers[i - 1].emplace_back(i == 1 ? inputLayer.size()
                                                         : hiddenLayers[i - 2].size(),
-                                                 false,
-                                                 learnF,
-                                                 momentum,
                                                  rng);
             }
         }
@@ -77,50 +76,75 @@ void Net::populateLayers(std::vector<size_t> const& layerConfiguration,
     for (size_t i = 0; i < layerConfiguration.back(); ++i) {
         outputLayer.emplace_back(populateHidden ? hiddenLayers.back().size()
                                                 : inputLayer.size(),
-                                 false,
-                                 learnF,
-                                 momentum,
                                  rng);
     }
 }
 
-void Net::adjustHelpers()
-{
-    std::vector<size_t> s;
-
-    s.push_back(inputLayer.size());
-    s.push_back(outputLayer.size());
-
-    for (auto& layer : hiddenLayers) {
-        s.push_back(layer.size());
-    }
-
-    auto maxVal = std::max_element(s.begin(), s.end());
-    _1.resize(*maxVal);
-    _2.resize(*maxVal);
-    std::fill(_1.begin(), _1.end(), .0);
-    std::fill(_2.begin(), _2.end(), .0);
-}
-
 void Net::forwardPropagation()
 {
-    for (auto& layer : hiddenLayers) {
-        for (size_t i = 0; i < layer.size(); ++i) {
-            layer[i].setInputs(_1);
-            layer[i].updateSum();
-            _2[i] = sigmoid::function(layer[i].sum);
+    for (size_t i = 0; i < hiddenLayers[0].size(); ++i) {
+        hiddenLayers[0][i].setInputs(std::move(std::vector<double>(inputLayer)));
+
+        double sum = .0;
+        for (size_t j = 0; j < hiddenLayers[0][i].inputs.size(); ++j) {
+            sum += hiddenLayers[0][i].weights[j] * hiddenLayers[0][i].inputs[j];
         }
-        _1 = _2;
+        if (biasPresent) sum += hiddenLayers[0][i].biasWeight;
+        hiddenLayers[0][i].output = sigmoid::function(sum);
+    }
+
+    auto perLayerInputMatch = [](layer_t const& previousLayer)
+        -> std::vector<double>
+    {
+        std::vector<double> previousLayerOutputs;
+        for (size_t i = 0; i < previousLayer.size(); ++i) {
+            previousLayerOutputs.push_back(previousLayer[i].output);
+        }
+        return previousLayerOutputs;
+    };
+
+    for (size_t i = 1; i < hiddenLayers.size(); ++i) {
+        for (size_t j = 0; j < hiddenLayers[i].size(); ++j) {
+            hiddenLayers[i][j].setInputs(
+                    std::move(perLayerInputMatch(hiddenLayers[i - 1]))
+            );
+
+            double sum = .0;
+            for (size_t k = 0; k < hiddenLayers[i][j].inputs.size(); ++k) {
+               sum += hiddenLayers[i][j].inputs[k] * hiddenLayers[i][j].weights[k];
+            }
+            if (biasPresent) sum += hiddenLayers[i][j].biasWeight;
+            hiddenLayers[i][j].output = sigmoid::function(sum);
+        }
+    }
+
+    for (size_t i = 0; i < outputLayer.size(); ++i) {
+        outputLayer[i].setInputs(
+                std::move(perLayerInputMatch(hiddenLayers.back()))
+        );
+
+        double sum = .0;
+        for (size_t j = 0; j < outputLayer[i].inputs.size(); ++j) {
+            sum += outputLayer[i].inputs[j] * outputLayer[i].weights[j];
+        }
+        if (biasPresent) sum += outputLayer[i].biasWeight;
+        outputLayer[i].output = sigmoid::function(sum);
     }
 }
 
 void Net::backPropagation(std::vector<double> const& trainingSet)
 {
     for (size_t i = 0; i < outputLayer.size(); ++i) {
-        outputLayer[i].setInputs(_2);
-        outputLayer[i].updateSum();
-        outputLayer[i].error = (trainingSet[i] - sigmoid::function(outputLayer[i].sum))
-          * sigmoid::derivative(outputLayer[i].sum);
+        auto& neuron = outputLayer[i];
+
+        double sum = .0;
+        for (size_t j = 0; j < neuron.inputs.size(); ++j) {
+            sum += neuron.inputs[j] * neuron.weights[j];
+        }
+        if (biasPresent) sum += neuron.biasWeight;
+
+        neuron.error = (trainingSet[i] - sigmoid::function(sum))
+          * sigmoid::derivative(sum);
     }
 
     size_t i = hiddenLayers.size() - 1;
@@ -128,7 +152,7 @@ void Net::backPropagation(std::vector<double> const& trainingSet)
         for (size_t k = 0; k < outputLayer.size(); k++) {
             hiddenLayers[i][j].error += outputLayer[k].error * outputLayer[k].weights[j];
         }
-        hiddenLayers[i][j].error *= sigmoid::derivative(hiddenLayers[i][j].sum);
+        hiddenLayers[i][j].error *= sigmoid::derivative(hiddenLayers[i][j].output);
     }
 
     while (i --> 0) {
@@ -136,7 +160,7 @@ void Net::backPropagation(std::vector<double> const& trainingSet)
             for (size_t k = 0; k < hiddenLayers[i + 1].size(); k++) {
                 hiddenLayers[i][j].error += hiddenLayers[i + 1][k].error * hiddenLayers[i + 1][k].weights[j];
             }
-            hiddenLayers[i][j].error *= sigmoid::derivative(hiddenLayers[i][j].sum);
+            hiddenLayers[i][j].error *= sigmoid::derivative(hiddenLayers[i][j].output);
         }
     }
 }
@@ -145,12 +169,12 @@ void Net::updateNeurons()
 {
     for (auto& layer : hiddenLayers) {
         for (auto& neuron : layer) {
-            neuron.update();
+            neuron.update(momentum, learnF, biasPresent);
         }
     }
 
     for (auto& neuron : outputLayer) {
-        neuron.update();
+        neuron.update(momentum, learnF, biasPresent);
     }
 }
 
@@ -163,15 +187,24 @@ void Net::training()
     };
 
     auto [inputLearnSignals, outputLearnSignals] =
-        createDataset(std::string{"../data/assign_in2out.csv"}, 4, 4, 4); 
+          createDataset(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
+
+    auto shuffleIndexes = [this](size_t setSize)
+    {
+        std::vector<size_t> indexes(setSize);
+        std::generate(indexes.begin(), indexes.end(),
+                [this, &setSize] { return --setSize; });
+        std::shuffle(indexes.begin(), indexes.end(), rng);
+        return indexes;
+    };
+
+    auto shuffledIndexes = shuffleIndexes(inputLearnSignals.size());
 
     while (trainingEpochs --> 0) {
-        for (size_t i = 0; i < inputLearnSignals.size(); ++i) {
-            inputLayer = inputLearnSignals[i];
-            _1 = inputLayer;
-
+        for (size_t i = 0; i < shuffledIndexes.size(); ++i) {
+            inputLayer = inputLearnSignals[shuffledIndexes[i]];
             forwardPropagation();
-            backPropagation(outputLearnSignals[i]);
+            backPropagation(outputLearnSignals[shuffledIndexes[i]]);
             updateNeurons();
         }
 
@@ -195,7 +228,6 @@ std::pair<int, int> Net::test()
 
     for (size_t i = 0; i < inputTestSignals.size(); ++i) {
         inputLayer = inputTestSignals[i];
-        _1 = inputLayer;
         forwardPropagation();
 
         int positiveInRow = 0;
@@ -203,13 +235,11 @@ std::pair<int, int> Net::test()
 
         std::cout << "-----\n";
         for (size_t j = 0; j < outputLayer.size(); ++j) {
-            outputLayer[j].setInputs(_2);
-            outputLayer[j].updateSum();
 
-            double estimator = outputTestSignals[i][j];
-            double response = sigmoid::function(outputLayer[j].sum);
-            double error = estimator - response;
-            
+            double wanted = outputTestSignals[i][j];
+            double response = outputLayer[j].output;
+            double error = wanted - response;
+
             if (error * error < 0.05) {
                 ++positiveInRow;
             }
@@ -217,7 +247,7 @@ std::pair<int, int> Net::test()
             {
                 ++negativeInRow;
             }
-            std::cout << "estimator: " << estimator << ", response: " << response << std::endl;
+            std::cout << "wanted: " << wanted << ", response: " << response << std::endl;
         }
         if (positiveInRow == outputLayer.size()) {
             ++positiveAnswers;
@@ -228,3 +258,4 @@ std::pair<int, int> Net::test()
 
     return std::make_pair(positiveAnswers, negativeAnswers);
 }
+

@@ -5,22 +5,20 @@
 
 struct Neuron
 {
-    Neuron(size_t inputCount, bool isBiasNeuron, double learnF,
-           double momentum, std::mt19937&);
-    void setInputs(std::vector<double> const&);
-    void updateSum();
-    void update();
+    Neuron(size_t inputCount, std::mt19937&);
+    void setInputs(std::vector<double>&&);
+    void update(double const& momentum, double const& learningRate, bool const& withBias);
     std::mt19937& rng;
     std::uniform_real_distribution<> dist;
     std::vector<double> inputs;
     std::vector<double> weights;
-    bool const isBiasNeuron;
-    double sum;
-    double const learnF;
-    double const momentum;
+    std::vector<double> pWeights;
+    double biasWeight;
+    double biasPWeight;
     double error;
+    double output;
 
 private:
-    std::vector<double> pWeights;
     void randomWeights();
 };
+

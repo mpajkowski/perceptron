@@ -14,20 +14,19 @@ public:
     std::pair<int, int> test();
 private:
     void init(int argc, char* argv[]);
-    void populateLayers(std::vector<size_t> const& layerConfiguration,
-                        double momentum,
-                        double learnF);
+    void populateLayers(std::vector<size_t> const& layerConfiguration);
     void forwardPropagation();
     void backPropagation(std::vector<double> const& trainingSet);
     void updateNeurons();
-    void adjustHelpers();
 
     size_t trainingEpochs;
+    bool biasPresent;
+    double momentum;
+    double learnF;
     std::vector<double> inputLayer;
     std::vector<layer_t> hiddenLayers;
     layer_t outputLayer;
-    std::vector<double> _1;
-    std::vector<double> _2;
-    std::vector<std::vector<double>> savedWeights;
+    std::vector<double> prod;
     std::mt19937 rng;
 };
+
