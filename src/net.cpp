@@ -187,7 +187,7 @@ void Net::training()
     };
 
     auto [inputLearnSignals, outputLearnSignals] =
-          createDataset(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
+          createDataset<8>(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
 
     auto shuffleIndexes = [this](size_t setSize)
     {
@@ -224,7 +224,7 @@ std::pair<int, int> Net::test()
     int negativeAnswers = 0;
 
     auto [inputTestSignals, outputTestSignals] =
-        createDataset(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
+        createDataset<8>(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
 
     for (size_t i = 0; i < inputTestSignals.size(); ++i) {
         inputLayer = inputTestSignals[i];
