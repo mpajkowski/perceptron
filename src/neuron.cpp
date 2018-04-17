@@ -36,9 +36,11 @@ void Neuron::update(double const& momentum, double const& learningRate,
         pWeights[i] = learningRate * error * inputs[i];
 
     }
-    
+
     if (withBias) {
         biasWeight += error * learningRate + momentum * biasPWeight;
         biasPWeight = learningRate * error;
     }
+
+    error = .0;
 }

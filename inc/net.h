@@ -8,25 +8,26 @@ using layer_t = std::vector<Neuron>;
 class Net
 {
 public:
-    Net(int argc, char* argv[]);
-    void training();
-
-    std::pair<int, int> test();
+    Net(bool biasPresent, double momentum, double learnF,
+        std::vector<size_t> const& layerConfiguration,
+        std::mt19937& rng);
+    double run(std::vector<double> & input,
+               std::vector<double> & output,
+               bool train);
 private:
     void init(int argc, char* argv[]);
     void populateLayers(std::vector<size_t> const& layerConfiguration);
     void forwardPropagation();
-    void backPropagation(std::vector<double> const& trainingSet);
+    double calculateOutputError(std::vector<double> const& trainingSet);
+    void backPropagation();
     void updateNeurons();
 
-    size_t trainingEpochs;
     bool biasPresent;
     double momentum;
     double learnF;
     std::vector<double> inputLayer;
     std::vector<layer_t> hiddenLayers;
     layer_t outputLayer;
-    std::vector<double> prod;
-    std::mt19937 rng;
+    std::mt19937& rng;
 };
 

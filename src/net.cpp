@@ -6,51 +6,14 @@
 #include <iostream>
 #include <cstdlib>
 
-Net::Net(int argc, char* argv[])
-    : trainingEpochs{2200}
-    , biasPresent{false}
-    , momentum{.8}
-    , learnF{.2}
+Net::Net(bool biasPresent, double momentum, double learnF,
+         std::vector<size_t> const& layerConfiguration,
+         std::mt19937& rng)
+    : biasPresent{biasPresent}
+    , momentum{momentum}
+    , learnF{learnF}
+    , rng{rng}
 {
-    init(argc, argv);
-}
-
-void Net::init(int argc, char* argv[])
-{
-    namespace po = boost::program_options;
-    std::vector<size_t> layerConfiguration;
-
-    po::options_description desc("Options:");
-    desc.add_options()
-        ("help,h", "prints this help message")
-        ("configuration,c", po::value<std::vector<size_t>>()->multitoken()->required(),
-            "specifies network layers configuration, i.e. 4 3 4")
-        ("epochs,e", po::value<size_t>(&trainingEpochs),
-            "specifies number of epochs for training, default: 2200")
-        ("momentum,m", po::value<double>(&momentum),
-            "specifies momentum factor, default: xD")
-        ("learning-rate,l", po::value<double>(&learnF),
-            "specifies learning rate factor, default: 0.02")
-        ("with-bias,b", po::bool_switch(&biasPresent),
-            "this option toggles on bias (1.)");
-
-    po::variables_map vm;
-
-    try {
-        po::store(po::parse_command_line(argc, argv, desc), vm);
-        po::notify(vm);
-
-        if (!vm["configuration"].empty()) {
-            layerConfiguration = vm["configuration"].as<std::vector<size_t>>();
-        }
-    }
-    catch (po::error& e) {
-        std::cerr << "Error " << e.what() << std::endl;
-        std::cerr << desc << std::endl;
-        exit(1);
-    }
-
-    rng.seed(std::random_device{}());
     populateLayers(layerConfiguration);
 }
 
@@ -93,8 +56,8 @@ void Net::forwardPropagation()
         hiddenLayers[0][i].output = sigmoid::function(sum);
     }
 
+    // Layers input/output matcher
     auto perLayerInputMatch = [](layer_t const& previousLayer)
-        -> std::vector<double>
     {
         std::vector<double> previousLayerOutputs;
         for (size_t i = 0; i < previousLayer.size(); ++i) {
@@ -132,21 +95,21 @@ void Net::forwardPropagation()
     }
 }
 
-void Net::backPropagation(std::vector<double> const& trainingSet)
+double Net::calculateOutputError(std::vector<double> const& trainingSet)
 {
+    double globalError = .0;
     for (size_t i = 0; i < outputLayer.size(); ++i) {
-        auto& neuron = outputLayer[i];
-
-        double sum = .0;
-        for (size_t j = 0; j < neuron.inputs.size(); ++j) {
-            sum += neuron.inputs[j] * neuron.weights[j];
-        }
-        if (biasPresent) sum += neuron.biasWeight;
-
-        neuron.error = (trainingSet[i] - sigmoid::function(sum))
-          * sigmoid::derivative(sum);
+        double localError = .0;
+        localError = trainingSet[i] - outputLayer[i].output;
+        outputLayer[i].error = localError * sigmoid::derivative(outputLayer[i].output);
+        globalError += localError * localError;
     }
 
+    return globalError * .5;
+}
+
+void Net::backPropagation()
+{
     size_t i = hiddenLayers.size() - 1;
     for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
         for (size_t k = 0; k < outputLayer.size(); k++) {
@@ -158,7 +121,8 @@ void Net::backPropagation(std::vector<double> const& trainingSet)
     while (i --> 0) {
         for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
             for (size_t k = 0; k < hiddenLayers[i + 1].size(); k++) {
-                hiddenLayers[i][j].error += hiddenLayers[i + 1][k].error * hiddenLayers[i + 1][k].weights[j];
+                hiddenLayers[i][j].error +=
+                    hiddenLayers[i + 1][k].error * hiddenLayers[i + 1][k].weights[j];
             }
             hiddenLayers[i][j].error *= sigmoid::derivative(hiddenLayers[i][j].output);
         }
@@ -178,84 +142,16 @@ void Net::updateNeurons()
     }
 }
 
-void Net::training()
+double Net::run(std::vector<double> & input,
+                std::vector<double> & output,
+                bool train)
 {
-    auto regularTest = [this]
-    {
-        auto t = test();
-        std::cout << "Good: " << t.first << ", Bad: " << t.second << "\n";
-    };
-
-    auto [inputLearnSignals, outputLearnSignals] =
-          createDataset<8>(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
-
-    auto shuffleIndexes = [this](size_t setSize)
-    {
-        std::vector<size_t> indexes(setSize);
-        std::generate(indexes.begin(), indexes.end(),
-                [this, &setSize] { return --setSize; });
-        std::shuffle(indexes.begin(), indexes.end(), rng);
-        return indexes;
-    };
-
-    auto shuffledIndexes = shuffleIndexes(inputLearnSignals.size());
-
-    while (trainingEpochs --> 0) {
-        for (size_t i = 0; i < shuffledIndexes.size(); ++i) {
-            inputLayer = inputLearnSignals[shuffledIndexes[i]];
-            forwardPropagation();
-            backPropagation(outputLearnSignals[shuffledIndexes[i]]);
-            updateNeurons();
-        }
-
-        if (!(trainingEpochs % 1000)) {
-            regularTest();
-        }
+    inputLayer = input;
+    forwardPropagation();
+    double globalError = calculateOutputError(output);
+    if (train) {
+        backPropagation();
+        updateNeurons();
     }
-    std::cout << "Learning ended!\n";
-    regularTest();
-    regularTest();
-    regularTest();
+    return __builtin_expect(train, 1) ? calculateOutputError(output) : globalError;
 }
-
-std::pair<int, int> Net::test()
-{
-    int positiveAnswers = 0;
-    int negativeAnswers = 0;
-
-    auto [inputTestSignals, outputTestSignals] =
-        createDataset<8>(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
-
-    for (size_t i = 0; i < inputTestSignals.size(); ++i) {
-        inputLayer = inputTestSignals[i];
-        forwardPropagation();
-
-        int positiveInRow = 0;
-        int negativeInRow = 0;
-
-        std::cout << "-----\n";
-        for (size_t j = 0; j < outputLayer.size(); ++j) {
-
-            double wanted = outputTestSignals[i][j];
-            double response = outputLayer[j].output;
-            double error = wanted - response;
-
-            if (error * error < 0.05) {
-                ++positiveInRow;
-            }
-            else
-            {
-                ++negativeInRow;
-            }
-            std::cout << "wanted: " << wanted << ", response: " << response << std::endl;
-        }
-        if (positiveInRow == outputLayer.size()) {
-            ++positiveAnswers;
-        } else {
-            ++negativeAnswers;
-        }
-    }
-
-    return std::make_pair(positiveAnswers, negativeAnswers);
-}
-
