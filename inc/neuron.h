@@ -20,5 +20,6 @@ struct Neuron
 
 private:
     void randomWeights();
+    friend class Serializer;
 };
 

@@ -29,5 +29,7 @@ private:
     std::vector<layer_t> hiddenLayers;
     layer_t outputLayer;
     std::mt19937& rng;
+
+    friend class Serializer;
 };
 

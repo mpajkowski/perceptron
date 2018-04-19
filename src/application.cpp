@@ -30,11 +30,11 @@ void Application::init(int argc, char* argv[])
         ("epochs,e", po::value<size_t>(&trainingEpochs),
             "specifies number of epochs for training, default: 2200")
         ("momentum,m", po::value<double>(&momentum),
-            "specifies momentum factor, default: xD")
+            "specifies momentum factor, default: 0.0")
         ("learning-rate,l", po::value<double>(&learnF),
-            "specifies learning rate factor, default: 0.02")
+            "specifies learning rate factor, default: 0.9")
         ("with-bias,b", po::bool_switch(&biasPresent),
-            "this option toggles on bias (1.)")
+            "this option toggles on bias (1. input for each neuron)")
         ("verbose,v", po::bool_switch(&verboseOutput),
             "toggles on verbose output");
 
@@ -56,8 +56,13 @@ void Application::init(int argc, char* argv[])
 
     rng.seed(std::random_device{}());
 
-    net = std::make_unique<Net>(biasPresent, momentum, learnF,
-                                layerConfiguration, rng);
+    net = new Net{biasPresent, momentum, learnF,
+                  layerConfiguration, rng};
+} 
+
+Application::~Application()
+{
+    delete net;
 }
 
 void Application::runNetwork(bool train)
