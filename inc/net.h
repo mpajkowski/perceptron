@@ -11,8 +11,8 @@ public:
     Net(bool biasPresent, double momentum, double learnF,
         std::vector<size_t> const& layerConfiguration,
         std::mt19937& rng);
-    double run(std::vector<double> & input,
-               std::vector<double> & output,
+    double run(std::vector<double> const& input,
+               std::vector<double> const& output,
                bool train);
 private:
     void init(int argc, char* argv[]);

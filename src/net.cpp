@@ -142,8 +142,8 @@ void Net::updateNeurons()
     }
 }
 
-double Net::run(std::vector<double> & input,
-                std::vector<double> & output,
+double Net::run(std::vector<double> const& input,
+                std::vector<double> const& output,
                 bool train)
 {
     inputLayer = input;
@@ -153,5 +153,5 @@ double Net::run(std::vector<double> & input,
         backPropagation();
         updateNeurons();
     }
-    return __builtin_expect(train, 1) ? calculateOutputError(output) : globalError;
+    return globalError;
 }
