@@ -9,4 +9,4 @@ before_script:
   - cmake ..
 script:
   - make
-  - ./perceptron -c 1 8 7 1
+  - ./perceptron -c 4 2 4
