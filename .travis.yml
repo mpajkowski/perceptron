@@ -8,5 +8,5 @@ before_script:
   - cd build
   - cmake ..
 script:
-  - make
+  - make V=1
   - ./perceptron -c 4 2 4
