@@ -99,9 +99,9 @@ void Application::runNetwork(bool train)
 
         if (i % 10 == 0
             && train) {
-            FileLogger.addToStream(std::string{
-                    "Epoch: " + std::to_string(i)
-                    + ", network error: " + std::to_string(err)
+            fileLogger.addToStream(std::string{
+                    std::to_string(i)
+                    + "," + std::to_string(err)
                     +"\n"});
         }
 

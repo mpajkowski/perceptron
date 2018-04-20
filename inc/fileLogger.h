@@ -8,5 +8,5 @@ public:
     ~FileLogger();
     void addToStream(std::string const&);
 private:
-    std::fstream stream;
+    std::ofstream* stream;
 };

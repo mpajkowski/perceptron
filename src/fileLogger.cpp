@@ -1,17 +1,19 @@
 #include "fileLogger.h"
 
 FileLogger::FileLogger()
+    : stream{new std::ofstream}
 {
-    this->stream.open("report.txt");
+    stream->open("report.txt");
 }
 
 FileLogger::~FileLogger()
 {
-    stream.close();
+    stream->close();
+    delete stream;
 }
 
 void FileLogger::addToStream(std::string const& str)
 {
-    stream << str;
+    *stream << str;
 }
 
