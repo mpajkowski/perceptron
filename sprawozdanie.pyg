@@ -1,0 +1,14 @@
+$ ./perceptron
+Error the option '--configuration' is required but missing
+Options::
+  -h [ --help ]              prints this help message
+  -c [ --configuration ] arg specifies network layers configuration,
+                             i.e. 4 3 4
+  -e [ --epochs ] arg        specifies number of epochs for training, default:
+                             2200
+  -m [ --momentum ] arg      specifies momentum factor, default: 0.0
+  -l [ --learning-rate ] arg specifies learning rate factor, default: 0.9
+  -b [ --with-bias ]         this option toggles on bias (1. input for each
+                             neuron)
+  -v [ --verbose ]           toggles on verbose output
+

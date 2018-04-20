@@ -1,1 +1,3 @@
 build/*
+!build/mk_data.sh
+.ipynb_checkpoints/*

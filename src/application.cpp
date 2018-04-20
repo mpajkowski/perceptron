@@ -9,6 +9,9 @@
 Application::Application(int argc, char* argv[])
     : trainingEpochs{1000}
     , verboseOutput{false}
+    , serializerPath{""}
+    , loggerPath{""}
+    , fileLogger{nullptr}
 {
     init(argc, argv);
 }
@@ -36,8 +39,12 @@ void Application::init(int argc, char* argv[])
         ("with-bias,b", po::bool_switch(&biasPresent),
             "this option toggles on bias (1. input for each neuron)")
         ("verbose,v", po::bool_switch(&verboseOutput),
-            "toggles on verbose output");
-
+            "toggles on verbose output")
+        ("serialize,s", po::value<std::string>(&serializerPath),
+            "serialize to XML")
+        ("log-learning", po::value<std::string>(&loggerPath),
+            "log learning results to file, format (epochs,mse)");
+        
     po::variables_map vm;
 
     try {
@@ -58,10 +65,14 @@ void Application::init(int argc, char* argv[])
 
     net = new Net{biasPresent, momentum, learnF,
                   layerConfiguration, rng};
+    if (loggerPath != "") {
+        fileLogger = new FileLogger{loggerPath};
+    }
 } 
 
 Application::~Application()
 {
+    delete fileLogger;
     delete net;
 }
 
@@ -97,16 +108,23 @@ void Application::runNetwork(bool train)
             }
         }
 
-        if (i % 10 == 0
-            && train) {
-            fileLogger.addToStream(std::string{
-                    std::to_string(i)
-                    + "," + std::to_string(err)
-                    +"\n"});
+        if (i % 20 == 0) {
+            std::string output{std::to_string(i) + 
+                "," + std::string{std::to_string(err)}};
+            if (fileLogger) {
+                fileLogger->addToStream(output);
+            } else {
+                std::cout << output << "\n";
+            }
         }
 
         if (__builtin_expect(!train, 0)) {
-            std::cout << err << std::endl;
+           if (fileLogger) {
+                fileLogger->addToStream(std::to_string(err));
+            } else {
+                std::cout << err << "\n";
+            }
+
         }
     }
 }

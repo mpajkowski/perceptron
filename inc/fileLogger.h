@@ -4,7 +4,7 @@
 class FileLogger
 {
 public:
-    FileLogger();
+    FileLogger(std::string const& path);
     ~FileLogger();
     void addToStream(std::string const&);
 private:

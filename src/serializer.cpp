@@ -133,6 +133,8 @@ void Serializer::saveData()
         _outputLayer->InsertEndChild(_neuron);
     }
     _network->InsertEndChild(_outputLayer);
-    xmlDoc.SaveFile("test");
+    if (application->serializerPath != " ") {
+        xmlDoc.SaveFile(application->serializerPath.c_str());
+    }
 }
 

@@ -1,0 +1,374 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Untitled}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        
+        \PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k}{import} \PY{n}{set\PYZus{}matplotlib\PYZus{}formats}
+        \PY{n}{set\PYZus{}matplotlib\PYZus{}formats}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{svg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        
+        \PY{o}{\PYZpc{}}\PY{k}{matplotlib} notebook
+        
+        \PY{k}{def} \PY{n+nf}{create\PYZus{}plot}\PY{p}{(}\PY{n}{file}\PY{p}{)}\PY{p}{:}
+            \PY{n}{data} \PY{o}{=} \PY{n+nb}{open}\PY{p}{(}\PY{n}{file}\PY{p}{)}\PY{o}{.}\PY{n}{read}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{strip}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        
+            \PY{n}{epochs} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+            \PY{n}{results} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+        
+            \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n}{data}\PY{p}{:}
+                \PY{n}{epoch}\PY{p}{,} \PY{n}{result} \PY{o}{=} \PY{n}{row}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+                \PY{n}{epochs}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n}{epoch}\PY{p}{)}\PY{p}{)}
+                \PY{n}{results}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{result}\PY{p}{)}\PY{p}{)}
+        
+            \PY{k}{for} \PY{n}{result} \PY{o+ow}{in} \PY{n}{results}\PY{p}{:}
+                \PY{n}{result} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{result}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+        
+            \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{epochs}\PY{p}{,} \PY{n}{results}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ko}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{markersize}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+            \PY{k}{return} \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+        
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l09m00}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .9 momentum .0}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l06m00}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .6 momentum .0}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l02m00}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .2 momentum .0}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l09m06}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .9 momentum .6}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l02m09}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .2 momentum .9}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l09m00b}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .9 momentum .0 + bias}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l06m00b}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .6 momentum .0 + bias}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l02m00b}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .2 momentum .0 + bias}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{9}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l09m06b}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .9 momentum .6 + bias}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e5000l02m09b}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .2 momentum .9 + bias}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+m+mi}{11}\PY{p}{)}
+        \PY{n}{create\PYZus{}plot}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/e100000l02m09}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{} learning .2 momentum .9 + bias}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+1
+
+    \end{Verbatim}
+
+    
+    \begin{verbatim}
+<IPython.core.display.Javascript object>
+    \end{verbatim}
+
+    
+    
+    \begin{verbatim}
+<IPython.core.display.HTML object>
+    \end{verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{data}\PY{p}{:}\PY{n}{image}\PY{o}{/}\PY{n}{png}\PY{p}{;}\PY{n}{base64}\PY{p}{,}\PY{n}{iVBORw0KGgoAAAANSUhEUgAAAX0AAAD8CAYAAACb4nSYAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz}\PY{o}{\PYZpc{}}\PY{k}{0AAAALEgAACxIB0t1}+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDIuMi4yLCBo\PYZpc{}0AdHRwOi8vbWF0cGxvdGxpYi5vcmcvhp/UCwAAIABJREFUeJzt3Xl8XNV99/HPb0aj1VpsS97k3TEY\PYZpc{}0AY8ymsIYlhMUsBZKQBmhastK0ISElLQ9OUp48JDQJbRLalBRISkLTEEggi0PMTgg7WAYDNsbYljd5\PYZpc{}0AlS1btnaN5vf8MVfDSBqNxrZs2TPf9+ull+49996Zc2T5O1fnnnuuuTsiIpIbQsNdAREROXgU+iIi\PYZpc{}0AOUShLyKSQxT6IiI5RKEvIpJDFPoiIjlEoS8ikkMU+iIiOUShLyKSQ/KGuwJ9VVZW+tSpU4e7GiIi\PYZpc{}0Ah5XFixdvd/eqwfY75EJ/6tSp1NbWDnc1REQOK2a2LpP91L0jIpJDFPoiIjlEoS8ikkMU+iIiOUSh\PYZpc{}0ALyKSQxT6IiI5RKEvIpJDsib0WzqifP/xFSzZsGu4qyIicsjKKPTNbJ6ZrTCzVWZ2U4rtnzSzBjNb\PYZpc{}0AEnx9Nmlbd1L5gqGsfLL2rm7+4+lVvFmv0BcRGcigd+SaWRi4AzgPqAcWmdkCd3+7z64PuPt1KV6i\PYZpc{}0Azd2P2/+qphcyAyAW04PeRUQGksmZ/knAKnevc/dO4H7gsgNbrb2XCH1lvojIgDIJ/WpgQ9J6fVDW\PYZpc{}0A10fN7E0ze9DMJiWVF5pZrZm9bGaX709l07GgJTFX6ouIDCST0LcUZX2T9Q/AVHefCzwJ3Ju0bbK7\PYZpc{}0A1wBXA7eb2Yx+b2B2bfDBUNvQ0JBh1XvrOdNX5ouIDCyT0K8Hks/cJwKbkndw9x3u3hGs/hg4MWnb\PYZpc{}0ApuB7HfAMcHzfN3D3u929xt1rqqoGnRk0pVDw0aQzfRGRgWUS+ouAmWY2zczygSuBXqNwzGx80uql\PYZpc{}0AwPKgfKSZFQTLlcDpQN8LwEOi50y/W6EvIjKgQUfvuHvUzK4DHgPCwD3uvszMbgFq3X0B8CUzuxSI\PYZpc{}0AAo3AJ4PDjwLuMrMY8Q+Y76QY9TMk1L0jIjK4jB6i4u4LgYV9ym5OWp4PzE9x3IvAMftZx4wkunc0\PYZpc{}0AfEdEZEBZc0euhmyKiAwua0LfdCFXRGRQWRT6hhm4Ql9EZEBZE/oQ7+JR946IyMCyLPQ1ZFNEJJ0s\PYZpc{}0AC31Tn76ISBpZF/rKfBGRgWVZ6GucvohIOlkW+rqQKyKSTlaFvpnG6YuIpJNVoR8Kmcbpi4ikkV2h\PYZpc{}0Ab6YhmyIiaWRd6KtPX0RkYFkW+pqGQUQknSwLfSMWG+5aiIgcurIs9DV6R0QknawKfVOfvohIWlkV\PYZpc{}0A+qGQ+vRFRNLJKPTNbJ6ZrTCzVWZ2U4rtnzSzBjNbEnx9NmnbNWa2Mvi6Zigr35eGbIqIpDfoM3LN\PYZpc{}0ALAzcAZwH1AOLzGxBigecP+Du1/U5dhTwf4EawIHFwbE7h6T2fYTVvSMiklYmZ/onAavcvc7dO4H7\PYZpc{}0AgcsyfP0LgCfcvTEI+ieAeftW1cFpGgYRkfQyCf1qYEPSen1Q1tdHzexNM3vQzCbt5bFDIj61skJf\PYZpc{}0ARGQgmYS+pSjrm6x/AKa6+1zgSeDevTgWM7vWzGrNrLahoSGDKqWmcfoiIullEvr1wKSk9YnApuQd\PYZpc{}0A3H2Hu3cEqz8GTsz02OD4u929xt1rqqqqMq17P+reERFJL5PQXwTMNLNpZpYPXAksSN7BzMYnrV4K\PYZpc{}0ALA+WHwPON7ORZjYSOD8oOyA0946ISHqDjt5x96iZXUc8rMPAPe6+zMxuAWrdfQHwJTO7FIgCjcAn\PYZpc{}0Ag2MbzeybxD84AG5x98YD0A4gPk5fZ/oiIgMbNPQB3H0hsLBP2c1Jy/OB+QMcew9wz37UMWNhPRhd\PYZpc{}0ARCStrLojV9MwiIikl1Whr6mVRUTSy7LQV/eOiEg62Rf6GqcvIjKgrAp9jdMXEUkvq0Jf3TsiIull\PYZpc{}0AVeiHQxq9IyKSTlaFvrp3RETSy6rQ1zQMIiLpZVnoa5y+iEg6WRb6upArIpJOVoW+mdGtcfoiIgPK\PYZpc{}0AqtBX946ISHpZFfrxIZsKfRGRgWRV6Gv0johIelkV+hqnLyKSXlaFfsgMZb6IyMCyLPR1pi8ikk5G\PYZpc{}0AoW9m88xshZmtMrOb0ux3hZm5mdUE61PNrM3MlgRfdw5VxVMJmdGtTn0RkQENGvpmFgbuAC4EZgNX\PYZpc{}0AmdnsFPuVAl8CXumzabW7Hxd8fX4I6pyurtTvbGPqTX9k2aamA/lWIiKHpUzO9E8CVrl7nbt3AvcD\PYZpc{}0Al6XY75vAbUD7ENZvr4STWvPCqu3DVQ0RkUNWJqFfDWxIWq8PyhLM7Hhgkrs/nOL4aWb2upn92czO\PYZpc{}0ASPUGZnatmdWaWW1DQ0Omde8nZJZYLs7P2+fXERHJVpmEvqUoS3Scm1kI+AHwlRT7bQYmu/vxwA3A\PYZpc{}0AfWZW1u/F3O929xp3r6mqqsqs5qkqmhT6IwoU+iIifWUS+vXApKT1icCmpPVSYA7wjJmtBU4BFphZ\PYZpc{}0Ajbt3uPsOAHdfDKwGjhiKiqcSSvp4Ks4PH6i3ERE5bGUS+ouAmWY2zczygSuBBT0b3b3J3Svdfaq7\PYZpc{}0ATwVeBi5191ozqwouBGNm04GZQN2QtyKQ3L2TfNYvIiJxg/aBuHvUzK4DHgPCwD3uvszMbgFq3X1B\PYZpc{}0AmsPPBG4xsyjQDXze3RuHouKpJJ/pa+imiEh/GXV8u/tCYGGfspsH2PfspOWHgIf2o357JfnsXqEv\PYZpc{}0AItJfVt2RG0461e/WnbkiIv1kVegnd+/EdKYvItJPloW+undERNLJqtDv1aev7h0RkX6yKvSjSQ/I\PYZpc{}0A1Zm+iEh/WRX6TW1diWWFvohIf1kV+ruSQl/z6ouI9JdVod/UqjN9EZF0sir0d7Z2JpYV+iIi/WVV\PYZpc{}0A6O9Sn76ISFpZFfr/fMlsSgvjM0toyKaISH9ZFfqXHjuB1/75PEB35IqIpJJVoQ8QDm7QShqyLyIi\PYZpc{}0AgawL/VAwAY+6d0RE+su60If4bJvdMZ3qi4j0lcWhP9y1EBE59GRn6JvpjlwRkRQyCn0zm2dmK8xs\PYZpc{}0AlZndlGa/K8zMzawmqWx+cNwKM7tgKCo9mHDIaO6I8krdjoPxdiIih41BQz94sPkdwIXAbOAqM5ud\PYZpc{}0AYr9S4EvAK0lls4k/SP1oYB7wo54HpR9IIYP7XlnPx+9+mQ2NrQf67UREDhuZnOmfBKxy9zp37wTu\PYZpc{}0ABy5Lsd83gduA9qSyy4D73b3D3dcAq4LXO6CSH5u4XqEvIpKQSehXAxuS1uuDsgQzOx6Y5O4P7+2x\PYZpc{}0AB0Jy6Nc1NB/otxMROWxkEvqWoixxldTMQsAPgK/s7bFJr3GtmdWaWW1DQ0MGVUovOfRXN7Ts9+uJ\PYZpc{}0AiGSLTEK/HpiUtD4R2JS0XgrMAZ4xs7XAKcCC4GLuYMcC4O53u3uNu9dUVVXtXQtSCCc9NnHltj37\PYZpc{}0A/XoiItkik9BfBMw0s2lmlk/8wuyCno3u3uTule4+1d2nAi8Dl7p7bbDflWZWYGbTgJnAq0Peij5C\PYZpc{}0ASWf6b9U34Rq+KSICZBD67h4FrgMeA5YDv3L3ZWZ2i5ldOsixy4BfAW8DjwJfcPfu/a92ej3TKldX\PYZpc{}0AFLG7PaqLuSIigbxMdnL3hcDCPmU3D7Dv2X3WbwVu3cf67ZPOaPx23NNmjObXi+tZvG4nU0aXHMwq\PYZpc{}0AiIgckrLyjtzOYA6GYydVUFEc4cXVO2jrPOB/YIiIHPKyMvSj3fHuneL8MKdMG82Di+s56uZH2bir\PYZpc{}0AbZhrJiIyvLIy9LuCM/3CSJhx5YWJ8nXbNXxTRHJbVoZ+NLiQWxgJkZ+X1MRUdw2IiOSQrAz9HoV5\PYZpc{}0AYQrysrqJIiJ7JasTsSASJj+c1U0UEdkrWZ2IhZEQBZH3mvj4sq3c+OAbw1gjEZHhleWh3/tM/2cv\PYZpc{}0AruVXtfXDWCMRkeGV9aFfEOk/fX/PHbsiIrkmu0M/L5SyT7+9SzdqiUhuyu7Qj4R79en3UOiLSK7K\PYZpc{}0A+tBPdab/vSfeVRePiOSkrA79cMhS9unf98p6nnh76zDUSERkeGV16AMDjtPvmZRNRCSXZH3op+rT\PYZpc{}0ABwhpSgYRyUFZH/oDnemHTKkvIrkno4eoHG4e/4cz2b6nA4jflZtKR1QjeEQk92Rl6B8xtpQjxpYC\PYZpc{}0AUJDX/0IuQKseqiIiOSij7h0zm2dmK8xslZndlGL7583sLTNbYmbPm9nsoHyqmbUF5UvM7M6hbsBg\PYZpc{}0A8geYZfNrv13K1T9+WQ9NF5GcMuiZvpmFgTuA84B6YJGZLXD3t5N2u8/d7wz2vxT4PjAv2Lba3Y8b\PYZpc{}0A2mpnLt3Uyi+u3kF7V4yi/NR/DYiIZJtMzvRPAla5e527dwL3A5cl7+Duu5NWS4BD5vR5oDP9Hi2d\PYZpc{}0A0YNUExGR4ZdJ6FcDG5LW64OyXszsC2a2GrgN+FLSpmlm9rqZ/dnMzkj1BmZ2rZnVmlltQ0PDXlR/\PYZpc{}0AcIPNp68HpotILskk9FONbex3Ju/ud7j7DOD/AF8PijcDk939eOAG4D4zK0tx7N3uXuPuNVVVVZnX\PYZpc{}0APgN5g4S+zvRFJJdkEvr1wKSk9YnApjT73w9cDuDuHe6+I1heDKwGjti3qu67RV87l29dPifltruf\PYZpc{}0ArdM8PCKSMzIJ/UXATDObZmb5wJXAguQdzGxm0urFwMqgvCq4EIyZTQdmAnVDUfG9UVVawCdOmcKq\PYZpc{}0AWy/st+03r23kodf0YBURyQ2Dhr67R4HrgMeA5cCv3H2Zmd0SjNQBuM7MlpnZEuLdONcE5WcCb5rZ\PYZpc{}0AG8CDwOfdvXHIW5GhvHCIh7/4gX7lLR3q4hGR3JDRzVnuvhBY2Kfs5qTl6wc47iHgof2p4FCbU13e\PYZpc{}0Aryyih6eLSI7IybR76itnce+nT0qsq0dfRHJFVk7DMJgZVSOoKi1IrKt7R0RyRU6e6QMUJz1cpbld\PYZpc{}0AoS8iuSFnQz95/H6zzvRFJEfkbOgn26MzfRHJETkd+tUVRYD69EUkd+R06L9w0zmcOGWkundEJGfk\PYZpc{}0AdOgDjCjIY49CX0RyhEK/MI89bV3DXQ0RkYMi50N/VHE+O1s7h7saIiIHRc6H/sjiCLvaujTTpojk\PYZpc{}0ABIV+ST7usFtdPCKSA3I+9EeV5APQqC4eEckBOR/6I4vjob+zRaEvItkv50M/caav0BeRHJDzoT8y\PYZpc{}0ACH2N4BGRXJDzoV9RFAFgZ2sXK7bswV2jeEQke2UU+mY2z8xWmNkqM7spxfbPm9lbZrbEzJ43s9lJ\PYZpc{}0A2+YHx60wswuGsvJDoTg/TDhkLFiyiQtuf5Zp8xfy6NItw10tEZEDYtDQDx5sfgdwITAbuCo51AP3\PYZpc{}0Aufsx7n4ccBvw/eDY2cQfpH40MA/4Uc+D0g8VZsaIgjze3rw7UfaF+14bxhqJiBw4mZzpnwSscvc6\PYZpc{}0Ad+8E7gcuS97B3XcnrZbw3hMILwPud/cOd18DrApe75BSWtj7AWI2TPUQETnQMnlcYjWwIWm9Hji5\PYZpc{}0A705m9gXgBiAfOCfp2Jf7HFu9TzU9gEoLI0BbYt2U+iKSpTI5008Vgf2udrr7He4+A/g/wNf35lgz\PYZpc{}0Au9bMas2stqGhIYMqDa1+Z/pKfRHJUpmEfj0wKWl9IrApzf73A5fvzbHufre717h7TVVVVQZVGlpl\PYZpc{}0AfUI/pMwXkSyVSegvAmaa2TQzyyd+YXZB8g5mNjNp9WJgZbC8ALjSzArMbBowE3h1/6s9tOLdO+8x\PYZpc{}0A9eqLSJYatE/f3aNmdh3wGBAG7nH3ZWZ2C1Dr7guA68zsXKAL2AlcExy7zMx+BbwNRIEvuHv3AWrL\PYZpc{}0APuvbvaMzfRHJVplcyMXdFwIL+5TdnLR8fZpjbwVu3dcKHgwjCtSnLyK5IefvyAUoK4r0K/vJc3V6\PYZpc{}0Adq6IZB2FPlA1oqDXenNHlG/9cTnfXrh8mGokInJgKPSBCRVFKcub9GAVEckyCn1gQkVhyvKH39zM\PYZpc{}0A0o1NB7k2IiIHjkIfGFeeOvQBLvnh8wexJiIiB5ZCHyjIO6TmgBMROWAU+oEvnztzwG0X/ftzB7Em\PYZpc{}0AIiIHjkI/8OVzjxhwW/K0yyIihzOFfob+6ddv0BmNDXc1RET2i0I/Q79eXM/PXlwz3NUQEdkvCv29\PYZpc{}0AsHJrMxAfv3/9/a/T1Kpx/CJyeFHo74W2rvhccf/z4lp+v2QTV9z5Ig17Ooa5ViIimVPo74X2IPRD\PYZpc{}0AwTScK7c1c809h9xM0SIiA1Lo74WeM/1w0tzLa3e0DFd1RET2mkJ/L7R1BqGvqZdF5DCl0E/ylfMG\PYZpc{}0AHqsP0N4VH7IZGuApK/N/8ybfevjtIa+XiMhQyeghKrniix+aSWd3jB8+vSrl9kSf/gAn+r98dQMA\PYZpc{}0Ax08eyRFjRzBzbOkBqaeIyL7SmX4feaGBfyQ9ffrdMU+Uxdz535fXsbv9veGbX7jvNc77wbP87IU1\PYZpc{}0ARLt1Q5eIHDoyCn0zm2dmK8xslZndlGL7DWb2tpm9aWZPmdmUpG3dZrYk+FrQ99hDTV544P76ntDv\PYZpc{}0ASLozt70rxtd/t5QbHljSb/9v/OFtfr9k09BXUkRkHw0a+mYWBu4ALgRmA1eZ2ew+u70O1Lj7XOBB\PYZpc{}0A4LakbW3uflzwdekQ1fuAiaQL/c7+od/j1TWNKY+p297MGxt28YtX1tGls34RGWaZnOmfBKxy9zp3\PYZpc{}0A7wTuBy5L3sHd/+TurcHqy8DEoa3mwRMJD/wj6YjGiMWcjmh3v22721M/T3dzUzvffmQ5X/vtUj71\PYZpc{}0A00UsXpf6w0FE5GDIJPSrgQ1J6/VB2UA+AzyStF5oZrVm9rKZXZ7qADO7NtintqGhIYMqHTh5aUIf\PYZpc{}0A4sG/NxOvbWlqZ0dzJwDPr9rOR//rpf2qn4jI/shk9E6q/g5PUYaZfQKoAc5KKp7s7pvMbDrwtJm9\PYZpc{}0A5e6re72Y+93A3QA1NTUpX/tgqSzJT7u9ras7ZffOQDY3tbOlqb1X2ZNvb2Xx+p0U5IW4/kMzMY37\PYZpc{}0AF5GDJJPQrwcmJa1PBPpdnTSzc4GvAWe5e2JCGnffFHyvM7NngOOB1X2PP1ScOGVkYnne0eN4dNmW\PYZpc{}0AXtvburrp6Mos9CtH5LNme/yO3arSgsQ8PZ/9n9rEPrc/uZIJ5YVcffJkQiFjbnUFFcURxpUXUjmi\PYZpc{}0AYH+bIyLSSyahvwiYaWbTgI3AlcDVyTuY2fHAXcA8d9+WVD4SaHX3DjOrBE6n90XeQ86YsoGflwvx\PYZpc{}0Ai7mp+vQBivPDtAYXe0+aNorPnTGdzwUB/y8fPoYJFYVc/B/9n7m7qamdu56tY0+f6wIrvjWPaLfz\PYZpc{}0Act0OPnTU2H1pjohIL4OGvrtHzew64DEgDNzj7svM7Bag1t0XAP8KjAB+HXRVrA9G6hwF3GVmMeLX\PYZpc{}0AD77j7of8Lau//8Lp5OeFuP3JdxNln/3ANH7y/Bou+eFziTtz+5o5tpQ3NuwC4NbL5zBzbCm//Nwp\PYZpc{}0ALHxrM6fNGD3gReJI2PoFPsD25k7+ZeFy/vjmZv7tY8fS2NLBtWfOGIIWikiuyuiOXHdfCCzsU3Zz\PYZpc{}0A0vK5Axz3InDM/lRwOBw7qQIAD64u3PmJEzh1eiV72qO8Ub+Ld7bsobwownc+cgx/94vXEscdMWZE\PYZpc{}0AIvRLCuI/2lNnjObUGaPTvt/sCeWJ45I1NneyPHhU4z/++g0ALpk7gdO+8zR3XH0CF88dv38NFZGc\PYZpc{}0Aozty03jvirJRXhzhu1fM5aYLZwHQ3BFl1viyXvvPHDsisVySn/kMF0dP6P06PbN47mjpINrd+7r2\PYZpc{}0As+/GRzfdv2g9ANv2tPPo0t7XHUREBqK5d/bShIoiID4Vw4SK3v3/yXPtFBeEM37NvqF/wuQKFq3d\PYZpc{}0ASWNLZ79pHNbuiN8O0TPi57P31vJmfRMAT33lLGZUjUBEZCA600+jp3sneUTl+PL3gr4gL5y0HGJG\PYZpc{}0A5XuBO1D/fXlRJLHc87rTKkt67fO+MfEPj8aWTrpivc/0l21q6rW+puG9+fwfX7Z1oKaIiAA6009r\PYZpc{}0ATnUZTy7f2ivoSwsjvfb5yPHVNLV1MW/OOCaPLuann3o/E4O/BlJ54oYzWbWtmZVbm/nwCdVs39PB\PYZpc{}0Arrbez9qdUF5IJGzsSHGm33NW3/M5lDxXUEHeex8033t8BWfMrOK4SRXk5+mzXUTiFPppfPGcmZwz\PYZpc{}0AawxzJ1b0Kj952ihOmjYKgO9//Lhe2z545Ji0rzmmtJAxpYWcNqMSgLLCCF3dMT56wkQ+OKuK6+57\PYZpc{}0AnYvnjufnL69j8bqd/UYKNQUfENFYvDz5DuKess5ofHronimin7vxg0waVbxXbReR7KTQTyMcsn6B\PYZpc{}0AD/DA3546pO8TCYf43l8eC8RH5wBceuwE7nlhDbEB7k9+YdUOvvvoO+QlTe6/szX+gdDU5y+HZ1c2\PYZpc{}0A8IH3VbKjpZMTJo9ERHKX/u4/RH39ktk8e+MH+frFRyXK+l7w/a9nVrM5aYqHnS3xOX6a2jp77bel\PYZpc{}0AqZ0bH3yTj/zoRb718NvUrtWkbyK5SqF/CJs4spjPnjE9sX7LZUen3X9na0/o9z7T39zUTv3ONgB+\PYZpc{}0A8vwarrjzpcT0ECKSW9S9cxi4+ZLZFOeHOXHKKJbfMo8tu9tZurGJL/7ydQDmXziLp5ZvY2dLF13d\PYZpc{}0AMf7tsXd7Hb+lqZ2Y9+4nWrl1D9MqS9jR3EFTWxfTNdRTJCfoTP8w8OkPTOPKkyYDUJQfZlplCX9x\PYZpc{}0A7ITE9jnV5Ywekc/2lg5+9/pGXqrbkdiWHw6xqamNxpbeXT7bgsnfLrj9Oc753p8PQitE5FCg0M8C\PYZpc{}0A7586ipljRrB2ewt1fbptZowZQV1DS7/poHtCf3tz/HvP0NB/f3Kl+vxFsphC/zD2o786gW9dPof8\PYZpc{}0AvBA1U0cRc1jQ55m8Zx1RlfLYhj295/hvaO6gvaubHzz5Llfc+RJLNzZx158P2RmwRWQfqU//MHbR\PYZpc{}0AMe9NuHb85ArKiyJs3NWWKHvhpnPY0tTOnX3Ce0xpAVt3d/SaRXRLU3tiWmiAD//oBbq6nU+cMiUx\PYZpc{}0AeZyIHP70vzlLlBZGWHj9GTz9zjZWb2umqztGdUURZYXv/RO/f+pIFq3dyazxZTz9zjaefifx6AO2\PYZpc{}0A7m7v9ZzfrmCit/qdbRw57r05hUTk8KbQzyLVFUX89SlTepWVFka4ZO543trYxF1/XUNZYR6vrd+V\PYZpc{}0AmK2zxxNvb6O6ov8DZDY0tiZCf097F1t3d1BRHOEfHljCv3z4GN3pK3KYUejngP+8+oRe6ydNG8U3\PYZpc{}0AL5/DP/9uaaLsodfqE8uRsCXO9DfsbKW5I8o7m3dz68LlvL7+vXn//+eltUTCIfLCIT54ZBW726NM\PYZpc{}0Aryxh4sgiPfdX5BBl7sP6HPJ+ampqvLa2dvAdZUhsaWpnXHkha7a38PiyLRQX5FEcCfPUO1tZ+NYW\PYZpc{}0ApowupqMrxpbd8Qu/nzxtKj97cW3a1zxtxmg+csJE5k4s54ixqbuGYjHHDH04iAwRM1vs7jWD7pdJ\PYZpc{}0A6JvZPODfiT8u8Sfu/p0+228APgtEgQbg0+6+Lth2DfD1YNdvufu96d5LoX/oeGhxPT9/eR1Lgqd6\PYZpc{}0AjSsr5KX553Dvi2v5xh/iT72cNKqIts4YZvC9jx3LWxub+PlL6xIfEkeNL+P0GaN5dW0jMXfCoRAl\PYZpc{}0A+WEWrW1kRtUIumPOFSdO5Nozp2NmvFXfxPrG1sRTwXp+P/XhIJLekIW+mYWBd4HzgHriD0q/KvlZ\PYZpc{}0At2b2QeAVd281s78Dznb3j5vZKKAWqCH+IKrFwInuvnOg91PoH3qaO6Js291OWVGEyhEFANz74loe\PYZpc{}0AfnMTv/zcKYTM6IrFEs8XiMWcFVv38Bc/fJ7oQDPG9VFRHGFX63vTR5w0bRRhM1Zu28PO1i6ufP8k\PYZpc{}0AKoojrNnewuzxZZQVRTj3qLFUFEdYt6OVWeNK9cEgOW0oQ/9U4BvufkGwPh/A3b89wP7HA//p7qeb\PYZpc{}0A2VXEPwD+Nth2F/CMu/9yoPdT6GePM257mg2Nbb3Kkq8XvPWN8/n5y+u47dEVKY+vKI4wdXQJ4ZCx\PYZpc{}0AeN2A5wmJ1y2KhJk1roy5E8uZPLqYEyaP5I36XUwZVcIHZlYOTaNEDlGZhn4mF3KrgQ1J6/XAyWn2\PYZpc{}0A/wzwSJpjqzN4T8kCt3/8OL7+u2XU72zl6pMnc9ef63jqhrM581//xLiyQkoLI3zsxEmJ0J81rpS6\PYZpc{}0A7S10BncP33r5MVw8dzxPv7OVT/+s94nAkWNLWbF1T2L906dPo6Uzyv++vJ5XgzuKi/PDiXsPXv3q\PYZpc{}0AhxhTFh+d9ODiet7etJvqkUXsaO7g2EkVdERjvLFhFxVFESpK8jlybClFkTAzx46gMBIm2h3r9ewC\PYZpc{}0AkcNVJqGf6m/mlH8emNkniHflnLU3x5rZtcC1AJMnT86gSnI4OHHKKB65/ozE+vwL49NE/+RvahLD\PYZpc{}0AQKtKC7jj6hPY1dbJX50cH276sxfW8I0/vM3J0+MPqul54Eyy0943OhH65UUR5l8Uf+251RXc+NCb\PYZpc{}0AALR2dnPhnHE8snQL337kHW6cdyRjSgv5x1+/0e/1CiOhfg+sAbjsuAmcM2sM19+/hNKCPCaPLubI\PYZpc{}0AcaXUTBnFiMI82jqjzKkup72rm6oRhYwekc9Lq3cwZXQxu9q6mDOhHDMojGT+zGSRAymT0K8HJiWt\PYZpc{}0ATwQ29d3JzM4Fvgac5e4dScee3efYZ/oe6+53A3dDvHsngzrJYezc2WN7rfdctO1xzWlT+cv3T6I4\PYZpc{}0AP/7rWRgJ8/PPnMSfVzTQ0tlNw552Lpk7np++sBbofWfyJceOZ/G6nWzb00405nzno3PpjMb47esb\PYZpc{}0A+e3rG3s9+jJZe1eMr140iwuOHsdZ//oMAJUj8nlk6RbeCC5k7+mIsmzTbpZt2s1vXtuYOLYoEqat\PYZpc{}0AqzvVywLxx1h+49Kj+eObm5lWWUJLR5QraiYyp7qcpRub+n2oPbp0C3Oqy2hq62LWuDIMCIV0vUKG\PYZpc{}0ARiZ9+nnEL+R+CNhI/ELu1e6+LGmf44EHgXnuvjKpfBTxi7c9A8VfI34hd8AZvdSnL5mKxZx1ja1M\PYZpc{}0AqCjs9ZD6VH78bB0PvVZPe1c3cydWsKWpnfZod+KZwwDP/OPZTK0s4X1fXUg05jz65TOYd/tzAJx7\PYZpc{}0A1BieXL6t12ueMbOSK06cyPX3L9mreueHQ3R2xxLfr/vg+7junPdRkBdi4642PvDdP/U75tTpo/nq\PYZpc{}0ARUdxzMRyWjujPPvudqKxGNMqS9jQ2Mqqbc389SlTWdWwhzGlhZQW5lFRnM/Olk4KIiHyg/spJHsN\PYZpc{}0A9ZDNi4DbiQ/ZvMfdbzWzW4Bad19gZk8CxwCbg0PWu/ulwbGfBr4alN/q7j9N914KfTmY3B132N7S\PYZpc{}0AwZjS+F8Bm5va6IzGmDK6hFfjYW3VAAAI/0lEQVTqdrBmewsfq5nEjuYOumLOT56rIz8c4jNnTKOy\PYZpc{}0ApIBfvLqejTvbaGzpoLGlk0vmTuB7T6zg/Nnj+O/n13D2kVU8s+K9O6D/+ZLZfPPht/vVpSAv1G82\PYZpc{}0A1L4mjyqmtbM7MTvqQMqLIpwyfRSPLduaKLvg6LFcOGc8Rflh/vxuA7PGlfLOlj20d3Uzsjifi44Z\PYZpc{}0AT0tHlNLCPEYW51NRHKGsMKK/Mg4TQxr6B5NCX7JJR7Sb7pizozn+PIOYO+PKC1n41maOGl/G1NEl\PYZpc{}0APLOigdfW76Sjq5umti5KCvIoKcijKBKmMBKmqrSAt+p3MaIwj7qGFjY1tfM3p0xhelUJ33v8XWrX\PYZpc{}0ANXLRnPEseGMT0Zgzp7qM1dtaCIeMi48Zz9JNTSzbtHuf6h8JGxXF+YTNcJxplSV0x5ydrV10RmOM\PYZpc{}0ALYsP4e3sdsqLIlRXFFEUCTNxZBF125spzs+jojhCeVH8qyQ/DzPYuKuNM2dWsXFXGyMK8oiEQ0wc\PYZpc{}0AWUQ05uwOfgYAI4sjmBnunhiSG+2OETLTh1EfCn2RHODutHfFKMoP9wrGzU1tFOfnUV4UAWDt9hZC\PYZpc{}0AZuxu76IjGqM75ry4ejvnzBpDY0sns8aV8ey7DVSPLKIj2s2u1i52tnaxYstu1u1oZURB/LXW7mhh\PYZpc{}0AZ2sX5UURxpcXsmFnK8WRPKKxGK8FU3SEQ0Z3hvdnJCstzKOlI0ryoZUj8imMhGls6aS1s5ujJ5Sx\PYZpc{}0AobGVUMiomTKS7c2dTK8sYXxFISu3NrN0YxOXH1/N8ZNHkhc2lm/eTVfUGTUinymjinGgrTNKRXE+\PYZpc{}0Ak0YVUxQJs3RjE8X5YWZPKKO5I0rDng7GlRWyvrGVNdtbyAuHOHnaKEoL89jQ2EZxfpgRBXmMLMmn\PYZpc{}0AO+Z0dccSF+p3tXYmrkXl58W705ra4j+vwUaAtXV2UxgJ7fP9Jgp9ETmo3J3dbVGK8sOsb2xhdEkB\PYZpc{}0Ae9qjVJUW0NTWRVNbF62dUVo7uymMhHluZQN1DfEhutOrSljd0Mz48iKOnlDG7vYoXd0xVm9rpq2r\PYZpc{}0Am5Vbm1nV0Ex5UYRZ40pxh8XrdzKurJBod4xNTe2MKyskL2yJ50HvrUg4/mGV6vNqbFkBJfl5iYcU\PYZpc{}0AlRXmcf7R43h9/U627elg0shi1u1ooSVpevJjqsv5yvlH8MmfLmJ6VQl1DS2J6zjVFUV86vSpvFy3\PYZpc{}0Ag3OPGsuVJ03mHx5Ywo6WTu791Pv3KfgV+iKSVZL/kum73tjSSUVRhGjM2dzUxvbmDqLdzpiyQqor\PYZpc{}0AitjV2snbm3cTc6eiOJ/Wjm7W7mgh2h3/KykvFGLltmbCITh6QjlvbWxiyqhiJo8u5t0te1j41pbE\PYZpc{}0A/R/zjh7H5t3tbN/TQWd3jKoRBRREQuxpj7JqW/Net8sMpleWsLqhhb8/ewY3zpu1Tz8fhb6IyEEU\PYZpc{}0AizltXd10u7N9T0fihr+plSU0tnQyuiSfgkiY/HAIx3mlrpHzjx7LT55bQ8OeDqpKC/inC47c54cW\PYZpc{}0AKfRFRHJIpqGvgbsiIjlEoS8ikkMU+iIiOUShLyKSQxT6IiI5RKEvIpJDFPoiIjlEoS8ikkMOuZuz\PYZpc{}0AzKwBWLcfL1EJbB+i6hwu1ObcoDbnhn1t8xR3rxpsp0Mu9PeXmdVmcldaNlGbc4PanBsOdJvVvSMi\PYZpc{}0AkkMU+iIiOSQbQ//u4a7AMFCbc4PanBsOaJuzrk9fREQGlo1n+iIiMoCsCX0zm2dmK8xslZndNNz1\PYZpc{}0A2R9mdo+ZbTOzpUllo8zsCTNbGXwfGZSbmf1H0O43zeyEpGOuCfZfaWbXDEdbMmVmk8zsT2a23MyW\PYZpc{}0Amdn1QXnWttvMCs3sVTN7I2jz/wvKp5nZK0H9HzCz/KC8IFhfFWyfmvRa84PyFWZ2wfC0KHNmFjaz\PYZpc{}0A183s4WA9q9tsZmvN7C0zW2JmtUHZ8Pxuu/th/wWEgdXAdCAfeAOYPdz12o/2nAmcACxNKrsNuClY\PYZpc{}0Avgn4brB8EfAIYMApwCtB+SigLvg+MlgeOdxtS9Pm8cAJwXIp8C4wO5vbHdR9RLAcAV4J2vIr4Mqg\PYZpc{}0A/E7g74LlvwfuDJavBB4IlmcHv/MFwLTg/0J4uNs3SNtvAO4DHg7Ws7rNwFqgsk/ZsPxuD/sPY4h+\PYZpc{}0AoKcCjyWtzwfmD3e99rNNU/uE/gpgfLA8HlgRLN8FXNV3P+Aq4K6k8l77HepfwO+B83Kl3UAx8Bpw\PYZpc{}0AMvEbc/KC8sTvNvAYcGqwnBfsZ31/35P3OxS/gInAU8A5wMNBG7K9zalCf1h+t7Ole6ca2JC0Xh+U\PYZpc{}0AZZOx7r4ZIPg+JigfqO2H7c8k+BP+eOJnvlnd7qCbYwmwDXiC+BnrLnePBrsk1z/RtmB7EzCaw6zN\PYZpc{}0AwO3AjUAsWB9N9rfZgcfNbLGZXRuUDcvv9r49gffQYynKcmVY0kBtPyx/JmY2AngI+LK77zZL1Yz4\PYZpc{}0ArinKDrt2u3s3cJyZVQC/BY5KtVvw/bBvs5ldAmxz98VmdnZPcYpds6bNgdPdfZOZjQGeMLN30ux7\PYZpc{}0AQNucLWf69cCkpPWJwKZhqsuBstXMxgME37cF5QO1/bD7mZhZhHjg/8LdfxMUZ327Adx9F/AM8T7c\PYZpc{}0ACjPrOSFLrn+ibcH2cqCRw6vNpwOXmtla4H7iXTy3k91txt03Bd+3Ef9wP4lh+t3OltBfBMwMRgDk\PYZpc{}0AE7/gs2CY6zTUFgA9V+uvId7n3VP+N8EV/1OApuBPxceA881sZDAq4Pyg7JBk8VP6/waWu/v3kzZl\PYZpc{}0AbbvNrCo4w8fMioBzgeXAn4Argt36trnnZ3EF8LTHO3cXAFcGI12mATOBVw9OK/aOu89394nuPpX4\PYZpc{}0A/9On3f2vyOI2m1mJmZX2LBP/nVzKcP1uD/cFjiG8UHIR8REfq4GvDXd99rMtvwQ2A13EP90/Q7wf\PYZpc{}0A8ylgZfB9VLCvAXcE7X4LqEl6nU8Dq4KvTw13uwZp8weI/6n6JrAk+Loom9sNzAVeD9q8FLg5KJ9O\PYZpc{}0APMBWAb8GCoLywmB9VbB9etJrfS34WawALhzutmXY/rN5b/RO1rY5aNsbwdeynnwart9t3ZErIpJD\PYZpc{}0AsqV7R0REMqDQFxHJIQp9EZEcotAXEckhCn0RkRyi0BcRySEKfRGRHKLQFxHJIf8fL8oViW35qzAA\PYZpc{}0AAAAASUVORK5CYII=
+\end{Verbatim}
+
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

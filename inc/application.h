@@ -16,7 +16,9 @@ private:
     size_t trainingEpochs;
     bool verboseOutput;
     std::mt19937 rng;
-    FileLogger fileLogger;
+    FileLogger* fileLogger;
+    std::string serializerPath;
+    std::string loggerPath;
     friend class Serializer;
 };
 

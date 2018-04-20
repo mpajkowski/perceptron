@@ -1,9 +1,11 @@
 #include "fileLogger.h"
 
-FileLogger::FileLogger()
+FileLogger::FileLogger(std::string const& path)
     : stream{new std::ofstream}
 {
-    stream->open("report.txt");
+    if (path != " ") {
+        stream->open(path);
+    }
 }
 
 FileLogger::~FileLogger()
@@ -14,6 +16,6 @@ FileLogger::~FileLogger()
 
 void FileLogger::addToStream(std::string const& str)
 {
-    *stream << str;
+    *stream << str << std::endl;
 }
 

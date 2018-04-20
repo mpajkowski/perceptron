@@ -110,14 +110,14 @@ double Net::calculateOutputError(std::vector<double> const& trainingSet)
 
 void Net::backPropagation()
 {
-    size_t i = hiddenLayers.size() - 1;
-    for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
+    for (size_t j = 0; j < hiddenLayers.back().size(); j++) {
         for (size_t k = 0; k < outputLayer.size(); k++) {
-            hiddenLayers[i][j].error += outputLayer[k].error * outputLayer[k].weights[j];
+            hiddenLayers.back()[j].error += outputLayer[k].error * outputLayer[k].weights[j];
         }
-        hiddenLayers[i][j].error *= sigmoid::derivative(hiddenLayers[i][j].output);
+        hiddenLayers.back()[j].error *= sigmoid::derivative(hiddenLayers.back()[j].output);
     }
 
+    size_t i = hiddenLayers.size() - 1;
     while (i --> 0) {
         for (size_t j = 0; j < hiddenLayers[i].size(); j++) {
             for (size_t k = 0; k < hiddenLayers[i + 1].size(); k++) {
