@@ -8,6 +8,7 @@ add_executable (perceptron src/main.cpp
                            src/net.cpp
                            src/application.cpp
                            src/serializer.cpp
+                           src/fileLogger.cpp
                            3rdParty/tinyxml2/tinyxml2.cpp
 )
 

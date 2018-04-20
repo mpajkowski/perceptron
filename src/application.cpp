@@ -98,9 +98,11 @@ void Application::runNetwork(bool train)
         }
 
         if (i % 10 == 0
-            && verboseOutput
             && train) {
-            std::cout << "Epoch: " << i << ", network error: " << err << std::endl;
+            FileLogger.addToStream(std::string{
+                    "Epoch: " + std::to_string(i)
+                    + ", network error: " + std::to_string(err)
+                    +"\n"});
         }
 
         if (__builtin_expect(!train, 0)) {

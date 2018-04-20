@@ -2,6 +2,7 @@
 #include <memory>
 #include <random>
 #include "net.h"
+#include "fileLogger.h"
 
 class Application
 {
@@ -15,6 +16,7 @@ private:
     size_t trainingEpochs;
     bool verboseOutput;
     std::mt19937 rng;
+    FileLogger FileLogger;
     friend class Serializer;
 };
 

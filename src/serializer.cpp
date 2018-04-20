@@ -29,7 +29,7 @@ void Serializer::saveData()
     _network->InsertEndChild(_config);
 
     auto* _inputLayer = xmlDoc.NewElement("InputLayer");
-    for (const auto& val : net->inputLayer) {
+    for (auto const& val : net->inputLayer) {
         auto* input = xmlDoc.NewElement("Input");
         input->SetText(val);
         _inputLayer->InsertEndChild(input);
@@ -37,9 +37,9 @@ void Serializer::saveData()
     _network->InsertEndChild(_inputLayer);
 
     auto* _hiddenLayers = xmlDoc.NewElement("HiddenLayers");
-    for (const auto& layer : net->hiddenLayers) {
+    for (auto const& layer : net->hiddenLayers) {
         auto* _layer = xmlDoc.NewElement("Layer");
-        for (const auto& neuron : layer) {
+        for (auto const& neuron : layer) {
             auto* _neuron = xmlDoc.NewElement("Neuron");
 
             auto* _biasWeight = xmlDoc.NewElement("BiasWeight");
@@ -59,7 +59,7 @@ void Serializer::saveData()
             _neuron->InsertEndChild(_output);
 
             auto* _inputs = xmlDoc.NewElement("Inputs");
-            for (const auto& input : neuron.inputs) {
+            for (auto const& input : neuron.inputs) {
                 auto* _input = xmlDoc.NewElement("Input");
                 _input->SetText(input);
                _inputs->InsertEndChild(_input);
@@ -67,7 +67,7 @@ void Serializer::saveData()
             _neuron->InsertEndChild(_inputs);
 
             auto* _weights = xmlDoc.NewElement("Weights");
-            for (const auto& weight : neuron.weights) {
+            for (auto const& weight : neuron.weights) {
                 auto* _weight = xmlDoc.NewElement("Weight");
                 _weight->SetText(weight);
                 _weights->InsertEndChild(_weight);
@@ -75,7 +75,7 @@ void Serializer::saveData()
             _neuron->InsertEndChild(_weights);
 
             auto* _pweights = xmlDoc.NewElement("PreviousWeights");
-            for (const auto& pWeight : neuron.pWeights) {
+            for (auto const& pWeight : neuron.pWeights) {
                 auto* _pWeight = xmlDoc.NewElement("PreviousWeight");
                 _pWeight->SetText(pWeight);
                 _pweights->InsertEndChild(_pWeight);
@@ -88,7 +88,7 @@ void Serializer::saveData()
     _network->InsertEndChild(_hiddenLayers);
 
     auto* _outputLayer = xmlDoc.NewElement("OutputLayer");
-    for (const auto& neuron : net->outputLayer) {
+    for (auto const& neuron : net->outputLayer) {
         auto* _neuron = xmlDoc.NewElement("Neuron");
 
         auto* _biasWeight = xmlDoc.NewElement("BiasWeight");
@@ -108,7 +108,7 @@ void Serializer::saveData()
         _neuron->InsertEndChild(_output);
 
         auto* _inputs = xmlDoc.NewElement("Inputs");
-        for (const auto& input : neuron.inputs) {
+        for (auto const& input : neuron.inputs) {
             auto* _input = xmlDoc.NewElement("Input");
             _input->SetText(input);
            _inputs->InsertEndChild(_input);
@@ -116,7 +116,7 @@ void Serializer::saveData()
         _neuron->InsertEndChild(_inputs);
 
         auto* _weights = xmlDoc.NewElement("Weights");
-        for (const auto& weight : neuron.weights) {
+        for (auto const& weight : neuron.weights) {
             auto* _weight = xmlDoc.NewElement("Weight");
             _weight->SetText(weight);
             _weights->InsertEndChild(_weight);
@@ -124,7 +124,7 @@ void Serializer::saveData()
         _neuron->InsertEndChild(_weights);
 
         auto* _pweights = xmlDoc.NewElement("PreviousWeights");
-        for (const auto& pWeight : neuron.pWeights) {
+        for (auto const& pWeight : neuron.pWeights) {
             auto* _pWeight = xmlDoc.NewElement("PreviousWeight");
             _pWeight->SetText(pWeight);
             _pweights->InsertEndChild(_pWeight);
@@ -135,3 +135,4 @@ void Serializer::saveData()
     _network->InsertEndChild(_outputLayer);
     xmlDoc.SaveFile("test");
 }
+
