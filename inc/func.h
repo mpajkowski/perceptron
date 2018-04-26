@@ -43,11 +43,5 @@ datasetPair_t createDataset(std::string const& path,
 
 namespace sigmoid {
 double function(double x);
-double derivative(double x);
-}
-
-namespace relu {
-double function(double x);
-double derivative(double x);
 }
 

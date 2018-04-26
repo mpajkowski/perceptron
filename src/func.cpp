@@ -29,18 +29,3 @@ double sigmoid::function(double x)
     return 1. / (1. + std::exp(-x));
 }
 
-double sigmoid::derivative(double x)
-{
-    return sigmoid::function(x) * (1 - sigmoid::function(x));
-}
-
-double relu::function(double x)
-{
-    return 1 - (x < 0 ? .01 * x : x);
-}
-
-double relu::derivative(double x)
-{
-    return 1 - (x < 0 ? .01 : 1);
-}
-

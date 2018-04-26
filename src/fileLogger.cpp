@@ -3,7 +3,7 @@
 FileLogger::FileLogger(std::string const& path)
     : stream{new std::ofstream}
 {
-    if (path != " ") {
+    if (path != "") {
         stream->open(path);
     }
 }
