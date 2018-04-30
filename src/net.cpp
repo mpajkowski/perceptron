@@ -51,6 +51,7 @@ double Net::calculateOutputError(std::vector<double> const& trainingSet)
         double const& output = outputLayer[i].output;
         double localError = trainingSet[i] - output;
         outputLayer[i].error = output * (1. - output) * localError;
+                 // derivative ^^^^^^^^^^^^^^^^^^^^^^
         globalError += localError * localError;
     }
 
@@ -72,6 +73,7 @@ void Net::backPropagation()
             }
 
             currLayer[j].error = output * (1. - output) * err;
+                   // derivative ^^^^^^^^^^^^^^^^^^^^^^
         }
     }
 }

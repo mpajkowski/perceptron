@@ -96,23 +96,15 @@ void Application::runNetwork(bool train)
             err = net->run(inputSignals[indexes[j]],
                            outputSignals[indexes[j]],
                            train);
+        }
 
-            if (i % 20 == 0) {
-                std::string output{std::to_string(i) +
-                    "," + std::string{std::to_string(err)}};
-                if (fileLogger) {
-                    fileLogger->addToStream(output);
-                } else {
-                    std::cout << output << "\n";
-                }
-            }
-
-            if (__builtin_expect(!train, 0)) {
-               if (fileLogger) {
-                    fileLogger->addToStream(std::to_string(err));
-                } else {
-                    std::cout << err << "\n";
-                }
+        if (i % 20 == 0) {
+            std::string output{std::to_string(i) +
+                "," + std::string{std::to_string(err)}};
+            if (fileLogger) {
+                fileLogger->addToStream(output);
+            } else {
+                std::cout << output << "\n";
             }
         }
     }
