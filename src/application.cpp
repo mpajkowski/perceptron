@@ -5,6 +5,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 
 Application::Application(int argc, char* argv[])
     : trainingEpochs{1000}
@@ -44,7 +45,7 @@ void Application::init(int argc, char* argv[])
             "serialize to XML")
         ("log-learning", po::value<std::string>(&loggerPath),
             "log learning results to file, format (epochs,mse)");
-        
+
     po::variables_map vm;
 
     try {
@@ -54,8 +55,7 @@ void Application::init(int argc, char* argv[])
         if (!vm["configuration"].empty()) {
             layerConfiguration = vm["configuration"].as<std::vector<size_t>>();
         }
-    }
-    catch (po::error& e) {
+    } catch (po::error& e) {
         std::cerr << "Error " << e.what() << std::endl;
         std::cerr << desc << std::endl;
         exit(1);
@@ -68,7 +68,7 @@ void Application::init(int argc, char* argv[])
     if (loggerPath != "") {
         fileLogger = new FileLogger{loggerPath};
     }
-} 
+}
 
 Application::~Application()
 {
@@ -81,35 +81,25 @@ void Application::runNetwork(bool train)
     auto [inputSignals, outputSignals] =
           createDataset<8>(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
 
-    auto shuffleIndexes = [this](size_t setSize)
-    {
-        std::vector<size_t> indexes(setSize);
-        std::generate(indexes.begin(), indexes.end(),
-                [this, &setSize] { return --setSize; });
-        std::shuffle(indexes.begin(), indexes.end(), rng);
-        return indexes;
-    };
-
-    auto shuffledIndexes = shuffleIndexes(inputSignals.size());
+    std::vector<size_t> indexes(inputSignals.size());
+    std::iota(std::begin(indexes), std::end(indexes), 0);
 
     size_t numIterations = train ? trainingEpochs : 1;
     for (size_t i = 0; i < numIterations; ++i) {
         double err = .0;
-        auto shuffledIndexes = shuffleIndexes(inputSignals.size());
-        for (size_t j = 0; j < shuffledIndexes.size(); ++j) {
-            if (__builtin_expect(train, 1)) {
-                err = net->run(inputSignals[shuffledIndexes[j]],
-                               outputSignals[shuffledIndexes[j]],
-                               true);
-            } else {
-                err = net->run(inputSignals[j],
-                               outputSignals[j],
-                               false);
-            }
+
+        if (train) {
+            std::shuffle(std::begin(indexes), std::end(indexes), rng);
+        }
+
+        for (size_t j = 0; j < indexes.size(); ++j) {
+            err = net->run(inputSignals[indexes[j]],
+                           outputSignals[indexes[j]],
+                           train);
         }
 
         if (i % 20 == 0) {
-            std::string output{std::to_string(i) + 
+            std::string output{std::to_string(i) +
                 "," + std::string{std::to_string(err)}};
             if (fileLogger) {
                 fileLogger->addToStream(output);
@@ -117,14 +107,6 @@ void Application::runNetwork(bool train)
                 std::cout << output << "\n";
             }
         }
-
-        if (__builtin_expect(!train, 0)) {
-           if (fileLogger) {
-                fileLogger->addToStream(std::to_string(err));
-            } else {
-                std::cout << err << "\n";
-            }
-
-        }
     }
 }
+

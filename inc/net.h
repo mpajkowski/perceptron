@@ -25,9 +25,8 @@ private:
     bool biasPresent;
     double momentum;
     double learnF;
-    std::vector<double> inputLayer;
-    std::vector<layer_t> hiddenLayers;
-    layer_t outputLayer;
+    double globalError;
+    std::vector<layer_t> layers;
     std::mt19937& rng;
 
     friend class Serializer;

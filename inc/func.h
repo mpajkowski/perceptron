@@ -29,6 +29,7 @@ datasetPair_t createDataset(std::string const& path,
     for (size_t i = 0; in.read_row(buffer[0], buffer[1], buffer[2],
                                    buffer[3], buffer[4], buffer[5],
                                    buffer[6], buffer[7]); ++i) {
+
         for (size_t j = 0; j < inputCount; ++j) {
             input[i].emplace_back(buffer[j]);
         } 
@@ -43,11 +44,5 @@ datasetPair_t createDataset(std::string const& path,
 
 namespace sigmoid {
 double function(double x);
-double derivative(double x);
-}
-
-namespace relu {
-double function(double x);
-double derivative(double x);
 }
 
