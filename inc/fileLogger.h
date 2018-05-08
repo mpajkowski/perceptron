@@ -1,12 +1,12 @@
 #pragma once
 #include <fstream>
 
-class FileLogger
+class Logger
 {
 public:
-    FileLogger(std::string const& path);
-    ~FileLogger();
+    Logger(std::string const& path);
+    ~Logger();
     void addToStream(std::string const&);
 private:
-    std::ofstream* stream;
+    std::ostream* stream;
 };

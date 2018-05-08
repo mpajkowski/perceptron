@@ -3,7 +3,6 @@
 #include "neuron.h"
 
 #include <boost/program_options.hpp>
-#include <iostream>
 #include <cstdlib>
 
 Net::Net(bool biasPresent, double momentum, double learnF,

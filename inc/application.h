@@ -14,9 +14,10 @@ private:
     void init(int argc, char* argv[]);
     Net* net;
     size_t trainingEpochs;
+    size_t probingFreq;
     bool verboseOutput;
     std::mt19937 rng;
-    FileLogger* fileLogger;
+    Logger* logger;
     std::string serializerPath;
     std::string loggerPath;
     friend class Serializer;

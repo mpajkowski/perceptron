@@ -1,20 +1,26 @@
 #include "fileLogger.h"
+#include <iostream>
 
-FileLogger::FileLogger(std::string const& path)
-    : stream{new std::ofstream}
+Logger::Logger(std::string const& path)
+    : stream{nullptr}
 {
     if (path != "") {
-        stream->open(path);
+        stream = new std::ofstream;
+        dynamic_cast<std::ofstream*>(stream)->open(path);
+    } else {
+        stream = &std::cout;
     }
 }
 
-FileLogger::~FileLogger()
+Logger::~Logger()
 {
-    stream->close();
-    delete stream;
+    if (auto st = dynamic_cast<std::ofstream*>(stream); st != nullptr) {
+        st->close();
+        delete stream;
+    }
 }
 
-void FileLogger::addToStream(std::string const& str)
+void Logger::addToStream(std::string const& str)
 {
     *stream << str << std::endl;
 }

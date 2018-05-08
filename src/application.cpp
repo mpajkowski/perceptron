@@ -3,24 +3,25 @@
 #include "func.h"
 
 #include <boost/program_options.hpp>
-#include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
 
 Application::Application(int argc, char* argv[])
     : trainingEpochs{1000}
     , verboseOutput{false}
     , serializerPath{""}
     , loggerPath{""}
-    , fileLogger{nullptr}
+    , logger{nullptr}
+    , probingFreq{20}
 {
     init(argc, argv);
 }
 
 void Application::init(int argc, char* argv[])
 {
-    double momentum = .0;
-    double learnF = .9;
+    double momentum = .9;
+    double learnF = .2;
     bool biasPresent = false;
 
     namespace po = boost::program_options;
@@ -34,13 +35,15 @@ void Application::init(int argc, char* argv[])
         ("epochs,e", po::value<size_t>(&trainingEpochs),
             "specifies number of epochs for training, default: 2200")
         ("momentum,m", po::value<double>(&momentum),
-            "specifies momentum factor, default: 0.0")
+            "specifies momentum factor, default: 0.9")
         ("learning-rate,l", po::value<double>(&learnF),
-            "specifies learning rate factor, default: 0.9")
+            "specifies learning rate factor, default: 0.2")
         ("with-bias,b", po::bool_switch(&biasPresent),
             "this option toggles on bias (1. input for each neuron)")
         ("verbose,v", po::bool_switch(&verboseOutput),
             "toggles on verbose output")
+        ("probing-freq,f", po::value<size_t>(&probingFreq),
+            "sets probing frequency value, default: 20")
         ("serialize,s", po::value<std::string>(&serializerPath),
             "serialize to XML")
         ("log-learning", po::value<std::string>(&loggerPath),
@@ -65,14 +68,12 @@ void Application::init(int argc, char* argv[])
 
     net = new Net{biasPresent, momentum, learnF,
                   layerConfiguration, rng};
-    if (loggerPath != "") {
-        fileLogger = new FileLogger{loggerPath};
-    }
+    logger = new Logger{loggerPath};
 }
 
 Application::~Application()
 {
-    delete fileLogger;
+    delete logger;
     delete net;
 }
 
@@ -101,14 +102,11 @@ void Application::runNetwork(bool train)
                            train);
         }
 
-        if (i % 20 == 0) {
-            std::string output{std::to_string(i) +
-                "," + std::string{std::to_string(err)}};
-            if (fileLogger) {
-                fileLogger->addToStream(output);
-            } else {
-                std::cout << output << "\n";
-            }
+        if (i % probingFreq == 0) {
+            std::string output;
+            output.append(std::to_string(i) +
+                "," + std::string{std::to_string(err)});
+            logger->addToStream(output);
         }
     }
 }
