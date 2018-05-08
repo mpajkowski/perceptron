@@ -78,8 +78,11 @@ Application::~Application()
 
 void Application::runNetwork(bool train)
 {
-    auto [inputSignals, outputSignals] =
-          createDataset<8>(std::string{"../data/assign_in2out.csv"}, 4, 4, 4);
+    auto [inputLearn, outputLearn, inputTest, outputTest] =
+          processIris(std::string{"../data/iris.csv"});
+
+    auto& inputSignals  = train ? inputLearn  : inputTest;
+    auto& outputSignals = train ? outputLearn : outputTest;
 
     std::vector<size_t> indexes(inputSignals.size());
     std::iota(std::begin(indexes), std::end(indexes), 0);
@@ -88,7 +91,7 @@ void Application::runNetwork(bool train)
     for (size_t i = 0; i < numIterations; ++i) {
         double err = .0;
 
-        if (train) {
+        if (likely(train)) {
             std::shuffle(std::begin(indexes), std::end(indexes), rng);
         }
 

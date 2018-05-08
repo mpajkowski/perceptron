@@ -32,13 +32,16 @@ void Net::populateLayers(std::vector<size_t> const& layerConfiguration)
 void Net::forwardPropagation()
 {
     for (size_t i = 1; i < layers.size(); ++i) {
-        for (size_t j = 0; j < layers[i].size(); ++j) {
+        auto& currLayer = layers[i];
+        auto& prevLayer = layers[i - 1];
+
+        for (size_t j = 0; j < currLayer.size(); ++j) {
             double sum = .0;
-            for (size_t k = 0; k < layers[i - 1].size(); ++k) {
-               sum += layers[i - 1][k].output * layers[i][j].weights[k];
+            for (size_t k = 0; k < prevLayer.size(); ++k) {
+               sum += prevLayer[k].output * currLayer[j].weights[k];
             }
-            if (biasPresent) sum += layers[i][j].biasWeight;
-            layers[i][j].output = sigmoid::function(sum);
+            if (biasPresent) sum += currLayer[j].biasWeight;
+            currLayer[j].output = sigmoid::function(sum);
         }
     }
 }
@@ -47,6 +50,7 @@ double Net::calculateOutputError(std::vector<double> const& trainingSet)
 {
     double globalError = .0;
     auto& outputLayer = layers.back();
+
     for (size_t i = 0; i < outputLayer.size(); ++i) {
         double const& output = outputLayer[i].output;
         double localError = trainingSet[i] - output;
@@ -81,21 +85,27 @@ void Net::backPropagation()
 void Net::updateNeurons()
 {
     for (size_t i = 1; i < layers.size(); ++i) {
-        for (size_t j = 0; j < layers[i].size(); ++j) {
-            for (size_t k = 0; k < layers[i - 1].size(); ++k) {
-                layers[i][j].weights[k] += learnF
-                                         * layers[i][j].error
-                                         * layers[i - 1][k].output
-                                         + momentum
-                                         * layers[i][j].pWeights[k];
-                layers[i][j].pWeights[k] = learnF
-                                         * layers[i][j].error
-                                         * layers[i - 1][k].output;
+        auto& currLayer = layers[i];
+        auto& prevLayer = layers[i - 1];
+
+        for (size_t j = 0; j < currLayer.size(); ++j) {
+            for (size_t k = 0; k < prevLayer.size(); ++k) {
+                currLayer[j].weights[k] += learnF
+                                         * currLayer[j].error
+                                         * prevLayer[k].output;
+                if (momentum > .0) {
+                    currLayer[j].weights[k] += momentum
+                                             * currLayer[j].pWeights[k];
+                    currLayer[j].pWeights[k] = learnF
+                                             * currLayer[j].error
+                                             * prevLayer[k].output;
+                }
             }
+
             if (biasPresent) {
-                layers[i][j].biasWeight += layers[i][j].error * learnF
-                                         + momentum * layers[i][j].biasPWeight;
-                layers[i][j].biasPWeight = learnF * layers[i][j].error;
+                currLayer[j].biasWeight += currLayer[j].error * learnF
+                                         + momentum * currLayer[j].biasPWeight;
+                currLayer[j].biasPWeight = learnF * currLayer[j].error;
             }
         }
     }
@@ -113,7 +123,7 @@ double Net::run(std::vector<double> const& input,
 
     double globalError = calculateOutputError(output);
 
-    if (train) {
+    if (likely(train)) {
         backPropagation();
         updateNeurons();
     }

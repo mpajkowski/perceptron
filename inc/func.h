@@ -5,6 +5,9 @@
 #include <functional>
 #include "csv.h"
 
+#define likely(x)      __builtin_expect(!!(x), 1)
+#define unlikely(x)    __builtin_expect(!!(x), 0)
+
 using dataset_t = std::vector<std::vector<double>>;
 using datasetPair_t =
     std::pair<dataset_t, dataset_t>;
@@ -41,6 +44,10 @@ datasetPair_t createDataset(std::string const& path,
 
     return std::make_pair(input, output);
 }
+
+
+std::tuple<dataset_t, dataset_t, dataset_t, dataset_t>
+processIris(std::string const& path);
 
 namespace sigmoid {
 double function(double x);
