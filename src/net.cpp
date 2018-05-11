@@ -1,17 +1,20 @@
 #include "net.h"
 #include "func.h"
 #include "neuron.h"
+#include "fileLogger.h"
 
 #include <boost/program_options.hpp>
 #include <cstdlib>
 
 Net::Net(bool biasPresent, double momentum, double learnF,
          std::vector<size_t> const& layerConfiguration,
-         std::mt19937& rng)
+         std::mt19937& rng,
+         Logger& logger)
     : biasPresent{biasPresent}
     , momentum{momentum}
     , learnF{learnF}
     , rng{rng}
+    , logger{logger}
 {
     populateLayers(layerConfiguration);
 }
@@ -49,10 +52,15 @@ double Net::calculateOutputError(std::vector<double> const& trainingSet)
 {
     double globalError = .0;
     auto& outputLayer = layers.back();
-
     for (size_t i = 0; i < outputLayer.size(); ++i) {
         double const& output = outputLayer[i].output;
         double localError = trainingSet[i] - output;
+
+        if (logger.isVerbose()) {
+            logger.addToStream({"Expected: " + std::to_string(trainingSet[i])
+                + ", output: " + std::to_string(output)});
+        }
+
         outputLayer[i].error = output * (1. - output) * localError;
                  // derivative ^^^^^^^^^^^^^^^^^^^^^^
         globalError += localError * localError;

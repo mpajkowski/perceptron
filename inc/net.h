@@ -4,13 +4,15 @@
 #include "neuron.h"
 
 using layer_t = std::vector<Neuron>;
+class Logger;
 
 class Net
 {
 public:
     Net(bool biasPresent, double momentum, double learnF,
         std::vector<size_t> const& layerConfiguration,
-        std::mt19937& rng);
+        std::mt19937& rng,
+        Logger& logger);
     double run(std::vector<double> const& input,
                std::vector<double> const& output,
                bool train);
@@ -28,6 +30,7 @@ private:
     double globalError;
     std::vector<layer_t> layers;
     std::mt19937& rng;
+    Logger& logger;
 
     friend class Serializer;
 };

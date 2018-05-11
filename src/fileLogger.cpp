@@ -1,8 +1,11 @@
 #include "fileLogger.h"
 #include <iostream>
 
-Logger::Logger(std::string const& path)
+Logger::Logger(std::string const& path, bool verbose, size_t probingFreq)
     : stream{nullptr}
+    , verbose{verbose}
+    , probingFreq{probingFreq}
+    , itCounter{nullptr}
 {
     if (path != "") {
         stream = new std::ofstream;
@@ -22,6 +25,17 @@ Logger::~Logger()
 
 void Logger::addToStream(std::string const& str)
 {
-    *stream << str << std::endl;
+    if ((itCounter ? *itCounter : 0 ) % probingFreq == 0) {
+      *stream << str << std::endl;
+    }
 }
 
+void Logger::setItCounter(size_t* i)
+{
+    itCounter = i;
+}
+
+bool Logger::isVerbose() const
+{
+  return verbose;
+}

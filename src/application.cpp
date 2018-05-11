@@ -66,9 +66,16 @@ void Application::init(int argc, char* argv[])
 
     rng.seed(std::random_device{}());
 
+    logger = new Logger{loggerPath, verboseOutput, probingFreq};
     net = new Net{biasPresent, momentum, learnF,
-                  layerConfiguration, rng};
-    logger = new Logger{loggerPath};
+                  layerConfiguration, rng, *logger};
+
+    std::string arguments;
+    for (size_t i = 0; i < argc; ++i) {
+        arguments.append(argv[i]);
+        arguments.append(" ");
+    }
+    logger->addToStream(arguments);
 }
 
 Application::~Application()
@@ -80,7 +87,7 @@ Application::~Application()
 void Application::runNetwork(bool train)
 {
     auto [inputLearn, outputLearn, inputTest, outputTest] =
-          processIris(std::string{"../data/iris.csv"});
+          processIris({"../data/iris.csv"});
 
     auto& inputSignals  = train ? inputLearn  : inputTest;
     auto& outputSignals = train ? outputLearn : outputTest;
@@ -89,7 +96,15 @@ void Application::runNetwork(bool train)
     std::iota(std::begin(indexes), std::end(indexes), 0);
 
     size_t numIterations = train ? trainingEpochs : 1;
-    for (size_t i = 0; i < numIterations; ++i) {
+
+    size_t i = 0;
+    logger->setItCounter(&i);
+    for (; i < numIterations; ++i) {
+
+        if (logger->isVerbose()) {
+            logger->addToStream({"Iteration " + std::to_string(i)});
+        }
+
         double err = .0;
 
         if (likely(train)) {
@@ -97,17 +112,14 @@ void Application::runNetwork(bool train)
         }
 
         for (size_t j = 0; j < indexes.size(); ++j) {
+            logger->addToStream({"=== ROW " + std::to_string(j)});
             err = net->run(inputSignals[indexes[j]],
                            outputSignals[indexes[j]],
                            train);
         }
 
-        if (i % probingFreq == 0) {
-            std::string output;
-            output.append(std::to_string(i) +
-                "," + std::string{std::to_string(err)});
-            logger->addToStream(output);
-        }
+        logger->addToStream({std::to_string(i) +
+            "," + std::to_string(err)});
     }
 }
 
