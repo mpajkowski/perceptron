@@ -112,7 +112,9 @@ void Application::runNetwork(bool train)
         }
 
         for (size_t j = 0; j < indexes.size(); ++j) {
-            logger->addToStream({"=== ROW " + std::to_string(j)});
+            if (logger->isVerbose()) {
+                logger->addToStream({"=== ROW " + std::to_string(j)});
+            }
             err = net->run(inputSignals[indexes[j]],
                            outputSignals[indexes[j]],
                            train);
