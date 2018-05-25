@@ -39,10 +39,15 @@ void Net::forwardPropagation()
 
         for (size_t j = 0; j < currLayer.size(); ++j) {
             double sum = .0;
+
             for (size_t k = 0; k < prevLayer.size(); ++k) {
                sum += prevLayer[k].output * currLayer[j].weights[k];
             }
-            if (biasPresent) sum += currLayer[j].biasWeight;
+
+            if (biasPresent) {
+                sum += currLayer[j].biasWeight;
+            }
+
             currLayer[j].output = sigmoid::function(sum);
         }
     }
@@ -100,13 +105,11 @@ void Net::updateNeurons()
                 currLayer[j].weights[k] += learnF
                                          * currLayer[j].error
                                          * prevLayer[k].output;
-                if (momentum > .0) {
-                    currLayer[j].weights[k] += momentum
-                                             * currLayer[j].pWeights[k];
-                    currLayer[j].pWeights[k] = learnF
-                                             * currLayer[j].error
-                                             * prevLayer[k].output;
-                }
+                currLayer[j].weights[k] += momentum
+                                         * currLayer[j].pWeights[k];
+                currLayer[j].pWeights[k] = learnF
+                                         * currLayer[j].error
+                                         * prevLayer[k].output;
             }
 
             if (biasPresent) {
@@ -122,8 +125,21 @@ double Net::run(std::vector<double> const& input,
                 std::vector<double> const& output,
                 bool train)
 {
+    std::ostringstream attributes;
+
+    if (logger.isVerbose()) {
+        attributes << "=== Attributes: ";
+    }
+
     for (size_t i = 0; i < input.size(); ++i) {
         layers[0][i].output = input[i];
+        if (logger.isVerbose()) {
+            attributes << input[i] << " ";
+        }
+    }
+
+    if (logger.isVerbose()) {
+        logger.addToStream(attributes.str());
     }
 
     forwardPropagation();

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <tinyxml2.h>
 #include <fstream>
 #include <memory>
@@ -12,6 +13,5 @@ public:
     void saveData();
     void loadData();
 private:
-    tinyxml2::XMLDocument* xmlDoc;
     Application* application;
 };

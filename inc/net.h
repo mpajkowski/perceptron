@@ -1,10 +1,13 @@
 #pragma once
-#include <vector>
-#include <random>
+
 #include "neuron.h"
 
-using layer_t = std::vector<Neuron>;
+#include <random>
+#include <vector>
+
 class Logger;
+
+using layer_t = std::vector<Neuron>;
 
 class Net
 {
@@ -34,4 +37,3 @@ private:
 
     friend class Serializer;
 };
-

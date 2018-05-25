@@ -19,4 +19,3 @@ struct Neuron
 
     friend class Serializer;
 };
-

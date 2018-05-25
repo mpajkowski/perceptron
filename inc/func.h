@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 #include <functional>
+#include <random>
 #include "csv.h"
 
 #define likely(x)      __builtin_expect(!!(x), 1)
@@ -28,14 +29,14 @@ datasetPair_t createDataset(std::string const& path,
     double buffer[csvCol];
     dataset_t input(setSize);
     dataset_t output(setSize);
-    
+
     for (size_t i = 0; in.read_row(buffer[0], buffer[1], buffer[2],
                                    buffer[3], buffer[4], buffer[5],
                                    buffer[6], buffer[7]); ++i) {
 
         for (size_t j = 0; j < inputCount; ++j) {
             input[i].emplace_back(buffer[j]);
-        } 
+        }
 
         for (size_t j = inputCount; j < totalCount; ++j) {
             output[i].emplace_back(buffer[j]);
@@ -45,11 +46,9 @@ datasetPair_t createDataset(std::string const& path,
     return std::make_pair(input, output);
 }
 
-
-std::tuple<dataset_t, dataset_t, dataset_t, dataset_t>
-processIris(std::string const& path);
+std::tuple<datasetPair_t, datasetPair_t, datasetPair_t>
+processIris(std::string const& path, std::mt19937& rng);
 
 namespace sigmoid {
 double function(double x);
 }
-

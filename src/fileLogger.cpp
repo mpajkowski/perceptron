@@ -7,7 +7,7 @@ Logger::Logger(std::string const& path, bool verbose, size_t probingFreq)
     , probingFreq{probingFreq}
     , itCounter{nullptr}
 {
-    if (path != "") {
+    if (!path.empty()) {
         stream = new std::ofstream;
         dynamic_cast<std::ofstream*>(stream)->open(path);
     } else {

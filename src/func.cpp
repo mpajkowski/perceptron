@@ -23,14 +23,14 @@ datasetPair_t createDataset(double rangeMin, double rangeMax,
     return {input, output};
 }
 
-std::tuple<dataset_t, dataset_t, dataset_t, dataset_t>
-processIris(std::string const& path)
+std::tuple<datasetPair_t, datasetPair_t, datasetPair_t>
+processIris(std::string const& path, std::mt19937& rng)
 {
     /* MAGIC NUMBERS
      *
      * 4 attributes + 3 possible outputs = 7 rows total
      * 150 - size of dataset
-     * 
+     *
      *
      */
     io::CSVReader<7> in{path};
@@ -39,26 +39,49 @@ processIris(std::string const& path)
     dataset_t outputLearn;
     dataset_t inputTest;
     dataset_t outputTest;
+    dataset_t inputValidate;
+    dataset_t outputValidate;
+    std::uniform_real_distribution<> dist{0,1};
 
-    for (size_t i = 0; in.read_row(buffer[0], buffer[1], buffer[2],
-                                   buffer[3], buffer[4], buffer[5],
-                                   buffer[6]); ++i) {
-        auto& input  = (i + 1) % 3 ? inputLearn  : inputTest;
-        auto& output = (i + 1) % 3 ? outputLearn : outputTest;
+    while (in.read_row(buffer[0], buffer[1], buffer[2],
+                       buffer[3], buffer[4], buffer[5],
+                       buffer[6])) {
+        double randNum = dist(rng);
 
-        input.emplace_back();
-        output.emplace_back();
+        dataset_t* input;
+        dataset_t* output;
+
+        if (randNum > .0 && randNum < .6) {
+            // learn
+            input = &inputLearn;
+            output = &outputLearn;
+        } else if (randNum > .6 && randNum < .9) {
+            // test
+            input = &inputTest;
+            output = &outputTest;
+        } else {
+            // validate
+            input = &inputValidate;
+            output = &outputValidate;
+        }
+
+        input->emplace_back();
+        output->emplace_back();
 
         for (size_t j = 0; j < 4; ++j) {
-            input.back().emplace_back(buffer[j]);
+            input->back().emplace_back(buffer[j]);
         }
 
         for (size_t j = 4; j < 7; ++j) {
-            output.back().emplace_back(buffer[j]);
+            output->back().emplace_back(buffer[j]);
         }
     }
 
-    return {inputLearn, outputLearn, inputTest, outputTest};
+    return {
+        { inputLearn, outputLearn },
+        { inputTest, outputTest },
+        { inputValidate, outputValidate }
+    };
 }
 
 double sigmoid::function(double x)

@@ -3,7 +3,7 @@
 #include "net.h"
 #include "neuron.h"
 
-using namespace tinyxml2;
+namespace xml = tinyxml2;
 
 Serializer::Serializer(Application* application)
     : application{application}
@@ -11,7 +11,7 @@ Serializer::Serializer(Application* application)
 
 void Serializer::saveData()
 {
-    XMLDocument xmlDoc;
+    xml::XMLDocument xmlDoc;
     auto net = application->net;
     auto _network = xmlDoc.NewElement("Network");
     xmlDoc.InsertFirstChild(_network);
@@ -71,7 +71,7 @@ void Serializer::saveData()
     }
     _network->InsertEndChild(_layers);
 
-    if (application->serializerPath != "") {
+    if (application->serializerPath.empty()) {
         xmlDoc.SaveFile(application->serializerPath.c_str());
     }
 }

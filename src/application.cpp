@@ -1,19 +1,18 @@
 #include "application.h"
 #include "net.h"
-#include "func.h"
 
 #include <boost/program_options.hpp>
-#include <cstdlib>
 #include <cmath>
+#include <cstdlib>
 #include <iostream>
 
 Application::Application(int argc, char* argv[])
     : trainingEpochs{1000}
     , verboseOutput{false}
-    , serializerPath{""}
-    , loggerPath{""}
     , logger{nullptr}
+    , net{nullptr}
     , probingFreq{20}
+    , loggerPath{}
 {
     init(argc, argv);
 }
@@ -21,7 +20,7 @@ Application::Application(int argc, char* argv[])
 void Application::init(int argc, char* argv[])
 {
     double momentum = .9;
-    double learnF = .2;
+    double learnF = .1;
     bool biasPresent = false;
 
     namespace po = boost::program_options;
@@ -76,6 +75,22 @@ void Application::init(int argc, char* argv[])
         arguments.append(" ");
     }
     logger->addToStream(arguments);
+
+    auto [learn, test, validate] =
+          processIris({"../data/iris.csv"}, rng);
+
+    auto [inputLearn, outputLearn] = learn;
+    auto [inputTest, outputTest] = test;
+    auto [inputValidate, outputValidate] = validate;
+
+    this->inputLearn = std::move(inputLearn);
+    this->outputLearn = std::move(outputLearn);
+
+    this->inputTest = std::move(inputTest);
+    this->outputTest = std::move(outputTest);
+
+    this->inputValidate = std::move(inputValidate);
+    this->outputValidate = std::move(outputValidate);
 }
 
 Application::~Application()
@@ -84,44 +99,49 @@ Application::~Application()
     delete net;
 }
 
-void Application::runNetwork(bool train)
+void Application::runNetwork(bool learning)
 {
-    auto [inputLearn, outputLearn, inputTest, outputTest] =
-          processIris({"../data/iris.csv"});
-
-    auto& inputSignals  = train ? inputLearn  : inputTest;
-    auto& outputSignals = train ? outputLearn : outputTest;
-
-    std::vector<size_t> indexes(inputSignals.size());
-    std::iota(std::begin(indexes), std::end(indexes), 0);
-
-    size_t numIterations = train ? trainingEpochs : 1;
-
-    size_t i = 0;
-    logger->setItCounter(&i);
-    for (; i < numIterations; ++i) {
-
-        if (logger->isVerbose()) {
-            logger->addToStream({"Iteration " + std::to_string(i)});
-        }
-
-        double err = .0;
-
-        if (likely(train)) {
-            std::shuffle(std::begin(indexes), std::end(indexes), rng);
-        }
-
-        for (size_t j = 0; j < indexes.size(); ++j) {
+    // TODO refactor to runNetworkInternal und runNetwork
+    if (learning) {
+        size_t i = 0;
+        logger->setItCounter(&i);
+        for (; i < trainingEpochs; ++i) {
             if (logger->isVerbose()) {
-                logger->addToStream({"=== ROW " + std::to_string(j)});
+                logger->addToStream({"Iteration " + std::to_string(i)});
             }
-            err = net->run(inputSignals[indexes[j]],
-                           outputSignals[indexes[j]],
-                           train);
-        }
 
-        logger->addToStream({std::to_string(i) +
+            auto timeToLearn = static_cast<bool>(i % probingFreq);
+
+            auto& input  = timeToLearn ? inputLearn  : inputTest;
+            auto& output = timeToLearn ? outputLearn : outputTest;
+
+            std::vector<size_t> indexes(input.size());
+            std::iota(std::begin(indexes), std::end(indexes), 0);
+
+            if (likely(timeToLearn)) {
+                std::shuffle(std::begin(indexes), std::end(indexes), rng);
+            }
+
+            double err = .0;
+
+            for (size_t j = 0; j < indexes.size(); ++j) {
+                err = net->run(input[indexes[j]],
+                               output[indexes[j]],
+                               timeToLearn);
+            }
+
+            logger->addToStream({std::to_string(i) +
             "," + std::to_string(err)});
+        }
+    } else {
+        double err = .0;
+        logger->addToStream({"Validation!"});
+        for (size_t i = 0; i < inputValidate.size(); ++i) {
+            err = net->run(inputValidate[i],
+                           outputValidate[i],
+                           false);
+        }
+        logger->addToStream({"Error: " + std::to_string(err)});
     }
 }
 
