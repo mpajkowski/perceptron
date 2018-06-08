@@ -10,7 +10,6 @@ Neuron::Neuron(size_t inputCount, std::mt19937& rng)
     , rng{rng}
     , dist{-.5, .5}
     , biasPWeight{.0}
-    , sum{.0}
 {
     for (size_t i = 0; i < inputCount; ++i) {
         weights.push_back(dist(rng));

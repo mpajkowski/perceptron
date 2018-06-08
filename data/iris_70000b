@@ -1,0 +1,140 @@
+./perceptron -c 4 5 4 3 --with-bias -l0.2 -m0.9 -e 70000 --log-learning ../data/iris_70000b 
+0,0.469713,0.361744,0.375961,0.012532
+20,0.487531,0.156773,0.337051,0.011235
+40,0.431345,0.110647,0.246363,0.00821209
+60,0.493882,0.0441363,0.189681,0.00632271
+Validation!
+=== Attributes: 0.0833333 0.583333 0.0677966 0.0833333 
+Expected: 1.000000, output: 0.945703
+Expected: 0.000000, output: 0.066136
+Expected: 0.000000, output: 0.001382
+=== Attributes: 0.0277778 0.375 0.0677966 0.0416667 
+Expected: 1.000000, output: 0.934113
+Expected: 0.000000, output: 0.082686
+Expected: 0.000000, output: 0.001535
+=== Attributes: 0.138889 0.416667 0.0677966 0 
+Expected: 1.000000, output: 0.942571
+Expected: 0.000000, output: 0.070680
+Expected: 0.000000, output: 0.001426
+=== Attributes: 0.388889 1 0.0847458 0.125 
+Expected: 1.000000, output: 0.956952
+Expected: 0.000000, output: 0.050627
+Expected: 0.000000, output: 0.001223
+=== Attributes: 0.305556 0.791667 0.0508475 0.125 
+Expected: 1.000000, output: 0.953118
+Expected: 0.000000, output: 0.055831
+Expected: 0.000000, output: 0.001278
+=== Attributes: 0.0833333 0.666667 0 0.0416667 
+Expected: 1.000000, output: 0.954658
+Expected: 0.000000, output: 0.053929
+Expected: 0.000000, output: 0.001262
+=== Attributes: 0.194444 0.416667 0.101695 0.0416667 
+Expected: 1.000000, output: 0.934096
+Expected: 0.000000, output: 0.082541
+Expected: 0.000000, output: 0.001530
+=== Attributes: 0.25 0.583333 0.0677966 0.0416667 
+Expected: 1.000000, output: 0.948755
+Expected: 0.000000, output: 0.061919
+Expected: 0.000000, output: 0.001340
+=== Attributes: 0.194444 0.5 0.0338983 0.0416667 
+Expected: 1.000000, output: 0.946920
+Expected: 0.000000, output: 0.064526
+Expected: 0.000000, output: 0.001367
+=== Attributes: 0.0555556 0.125 0.0508475 0.0833333 
+Expected: 1.000000, output: 0.877749
+Expected: 0.000000, output: 0.166404
+Expected: 0.000000, output: 0.002169
+=== Attributes: 0.138889 0.416667 0.0677966 0.0833333 
+Expected: 1.000000, output: 0.932823
+Expected: 0.000000, output: 0.084344
+Expected: 0.000000, output: 0.001546
+=== Attributes: 0.722222 0.458333 0.661017 0.583333 
+Expected: 0.000000, output: 0.006620
+Expected: 1.000000, output: 0.729161
+Expected: 0.000000, output: 0.186827
+=== Attributes: 0.611111 0.333333 0.610169 0.583333 
+Expected: 0.000000, output: 0.005356
+Expected: 1.000000, output: 0.721660
+Expected: 0.000000, output: 0.215464
+=== Attributes: 0.555556 0.541667 0.627119 0.625 
+Expected: 0.000000, output: 0.006863
+Expected: 1.000000, output: 0.705615
+Expected: 0.000000, output: 0.186651
+=== Attributes: 0.166667 0.166667 0.389831 0.375 
+Expected: 0.000000, output: 0.138595
+Expected: 1.000000, output: 0.903270
+Expected: 0.000000, output: 0.015548
+=== Attributes: 0.444444 0.416667 0.542373 0.583333 
+Expected: 0.000000, output: 0.020267
+Expected: 1.000000, output: 0.836528
+Expected: 0.000000, output: 0.075871
+=== Attributes: 0.5 0.375 0.627119 0.541667 
+Expected: 0.000000, output: 0.009162
+Expected: 1.000000, output: 0.777233
+Expected: 0.000000, output: 0.143791
+=== Attributes: 0.361111 0.375 0.440678 0.5 
+Expected: 0.000000, output: 0.106002
+Expected: 1.000000, output: 0.892926
+Expected: 0.000000, output: 0.019404
+=== Attributes: 0.666667 0.458333 0.576271 0.541667 
+Expected: 0.000000, output: 0.040874
+Expected: 1.000000, output: 0.876136
+Expected: 0.000000, output: 0.041867
+=== Attributes: 0.444444 0.5 0.644068 0.708333 
+Expected: 0.000000, output: 0.000473
+Expected: 1.000000, output: 0.283067
+Expected: 0.000000, output: 0.745300
+=== Attributes: 0.555556 0.208333 0.661017 0.583333 
+Expected: 0.000000, output: 0.000777
+Expected: 1.000000, output: 0.416092
+Expected: 0.000000, output: 0.632249
+=== Attributes: 0.583333 0.375 0.559322 0.5 
+Expected: 0.000000, output: 0.047401
+Expected: 1.000000, output: 0.891252
+Expected: 0.000000, output: 0.036380
+=== Attributes: 0.416667 0.291667 0.491525 0.458333 
+Expected: 0.000000, output: 0.075915
+Expected: 1.000000, output: 0.906068
+Expected: 0.000000, output: 0.024588
+=== Attributes: 0.305556 0.416667 0.59322 0.583333 
+Expected: 0.000000, output: 0.006652
+Expected: 1.000000, output: 0.721600
+Expected: 0.000000, output: 0.188399
+=== Attributes: 0.194444 0.125 0.389831 0.375 
+Expected: 0.000000, output: 0.122965
+Expected: 1.000000, output: 0.911507
+Expected: 0.000000, output: 0.016812
+=== Attributes: 0.361111 0.291667 0.542373 0.5 
+Expected: 0.000000, output: 0.028933
+Expected: 1.000000, output: 0.876671
+Expected: 0.000000, output: 0.054638
+=== Attributes: 0.611111 0.5 0.694915 0.791667 
+Expected: 0.000000, output: 0.000083
+Expected: 0.000000, output: 0.106416
+Expected: 1.000000, output: 0.938694
+=== Attributes: 0.583333 0.291667 0.728814 0.75 
+Expected: 0.000000, output: 0.000044
+Expected: 0.000000, output: 0.078370
+Expected: 1.000000, output: 0.964285
+=== Attributes: 0.388889 0.208333 0.677966 0.791667 
+Expected: 0.000000, output: 0.000032
+Expected: 0.000000, output: 0.064388
+Expected: 1.000000, output: 0.973523
+=== Attributes: 0.722222 0.458333 0.745763 0.833333 
+Expected: 0.000000, output: 0.000036
+Expected: 0.000000, output: 0.065243
+Expected: 1.000000, output: 0.971021
+=== Attributes: 0.416667 0.291667 0.694915 0.75 
+Expected: 0.000000, output: 0.000049
+Expected: 0.000000, output: 0.082658
+Expected: 1.000000, output: 0.961056
+=== Attributes: 0.694444 0.5 0.830508 0.916667 
+Expected: 0.000000, output: 0.000017
+Expected: 0.000000, output: 0.042271
+Expected: 1.000000, output: 0.985041
+=== Attributes: 0.666667 0.541667 0.79661 1 
+Expected: 0.000000, output: 0.000015
+Expected: 0.000000, output: 0.039396
+Expected: 1.000000, output: 0.986514
+Max epoch error: 0.534733
+Avg epoch error: 0.040737

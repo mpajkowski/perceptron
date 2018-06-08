@@ -14,7 +14,6 @@ struct Neuron
     double biasWeight;
     double biasPWeight;
     double error;
-    double sum;
     double output;
 
     friend class Serializer;

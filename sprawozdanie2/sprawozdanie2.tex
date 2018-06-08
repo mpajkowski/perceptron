@@ -1,5 +1,3 @@
-% vim:encoding=utf8 ft=tex sts=2 sw=2 et:
-
 \documentclass{classrep}
 \usepackage[utf8]{inputenc}
 
@@ -10,7 +8,6 @@
 \studycycle{Informatyka, studia niestacjonarne}
 \coursesemester{IV}
 
-%\coursename{Angelologia teoretyczna i stosowana}
 \coursename{Inteligentna Analiza Danych}
 \courseyear{2017/2018}
 
@@ -42,515 +39,83 @@ Zestaw irysów składa się z 150 rekordów. W każdym wierszu pierwsze cztery w
 \newline
 Aby etykiety klas przekształcić na wartość liczbową (i tym samym przystosować format danych do zgodnego z specyfiką projektu) wprowadzono wyjścia, które będą kolejno reprezentować stuprocentowe prawdopodobieństwo przynależności do danej klasy (oraz dla dwóch pozostałych - prawdopodobieństwo równe 0\%). Zgodnie z przyjętą nomenklaturą predykowane wyjście dla klasy "setosa" to 1 0 0, dla klasy "versicolor" 0 1 0. a dla klasy "virginica" 0 0 1. Odpowiednio spreprawowany plik tekstowy jest podawany do aplikacji.
 \subsection{Podział zbioru}
-Zbiór kwiatów jest dzielony na następujące zbiory: treningowy, testowy oraz walidacyjny - proporcja 6:3:1.
+Zbiór kwiatów jest dzielony na następujące zbiory: treningowy, testowy oraz walidacyjny - proporcja 6:2:2.
 Przypisanie rekordów do odpowiednich zbiorów następuje w sposób losowy - z tego względu podana wyżej proporcja nie jest idealnie zachowana.
 \subsection{Część badawcza}
-\subsubsection{Opis części badawczej}
 Manipulatory takie jak współczynnik momentum, współczynnik nauki czy obecność biasu pozostaną stałe dla całego badania, przyjmą następujące wartości:
+
+
 
 -momentum: 0.9,
 
--nauka: 0.01,
+-nauka: 0.2,
 
 -bias: aktywny.
-\newline
-Liczba epok: W pierwszej próbie 10000, w drugiej - 140000,
-\newline
-Częstotliwość sprawdzania błędu za pomocą zestawu testowego: 1 / 20 epok,
-\newline
-Kryterium udanej klasyfikacji: 99\% pewności.
-\newline
-Na listingach zaprezentowane są oczekiwane odpowiedzi i odpowiedzi sieci dla każdego kwiatu ze zbioru walidacyjnego.
-\newpage
+
+-liczba epok: 70000,
+
+-kryterium udanej klasyfikacji: 98\% pewności.
+
 \subsection{Wyniki}
-\subsubsection{Konfiguracja 4-4-3, 10000 epok}
-\begin{lstlisting}[basicstyle=\small]
-=== Attributes: 5.4 3.7 1.5 0.2
-Expected: 1.000000, output: 0.987056
-Expected: 0.000000, output: 0.015400
-Expected: 0.000000, output: 0.000109
-=== Attributes: 5.1 3.8 1.5 0.3 
-Expected: 1.000000, output: 0.986976
-Expected: 0.000000, output: 0.015493
-Expected: 0.000000, output: 0.000109
-=== Attributes: 4.5 2.3 1.3 0.3 
-Expected: 1.000000, output: 0.984507
-Expected: 0.000000, output: 0.018438
-Expected: 0.000000, output: 0.000117
-=== Attributes: 5.7 2.8 4.5 1.3 
-Expected: 0.000000, output: 0.012390
-Expected: 1.000000, output: 0.991941
-Expected: 0.000000, output: 0.005329
-=== Attributes: 5.8 2.7 4.1 1 
-Expected: 0.000000, output: 0.012922
-Expected: 1.000000, output: 0.992662
-Expected: 0.000000, output: 0.004535
-=== Attributes: 6.3 2.5 4.9 1.5 
-Expected: 0.000000, output: 0.011666
-Expected: 1.000000, output: 0.911234
-Expected: 0.000000, output: 0.071384
-=== Attributes: 6 2.9 4.5 1.5 
-Expected: 0.000000, output: 0.012341
-Expected: 1.000000, output: 0.990407
-Expected: 0.000000, output: 0.006424
-=== Attributes: 6.8 3 5.5 2.1 
-Expected: 0.000000, output: 0.010184
-Expected: 0.000000, output: 0.024265
-Expected: 1.000000, output: 0.979700
-=== Attributes: 6.4 3.2 5.3 2.3 
-Expected: 0.000000, output: 0.010154
-Expected: 0.000000, output: 0.021421
-Expected: 1.000000, output: 0.982239
-=== Attributes: 6.7 3.3 5.7 2.1 
-Expected: 0.000000, output: 0.010213
-Expected: 0.000000, output: 0.027401
-Expected: 1.000000, output: 0.976872
-=== Attributes: 6.4 2.8 5.6 2.1 
-Expected: 0.000000, output: 0.010123
-Expected: 0.000000, output: 0.018746
-Expected: 1.000000, output: 0.984612
+\subsubsection{Konfiguracja 4-3, 500000 epok}
+\begin{center}
+  \includegraphics{output_0_12.pdf}
+\end{center}
+
+\begin{center}
+  \includegraphics{output_0_11.pdf}
+\end{center}
+
+Widać wyraźnie, że sieć w tej konfiguracji nie jest w stanie zminimalizować błędu nawet po 500000 epok.
+
+\subsubsection{Konfiguracja 4-3-3, 70000 epok}
+\begin{center}
+  \includegraphics{output_0_0.pdf}
+\end{center}
+\begin{center}
+  \includegraphics{output_0_1.pdf}
+\end{center}
+
+Zbiór walidacyjny: Maksymalny błąd: 0.994885, średni błąd: 0.070864.
+Sieć poprawnie rozpoznała 33/38 kwiatów.
+
+\subsubsection{Konfiguracja 4-7-3, 70000 epok}
+\begin{center}
+  \includegraphics{output_0_3.pdf}
+\end{center}
+\begin{center}
+  \includegraphics{output_0_4.pdf}
+\end{center}
+
+Zbiór walidacyjny: Maksymalny błąd: 0.016240, średni błąd: 0.000484.
+Sieć poprawnie rozpoznała wszystkie kwiaty (34).
+
+\subsubsection{Konfiguracja 4-5-4-3, 70000 epok}
+\begin{center}
+  \includegraphics{output_0_6.pdf}
+\end{center}
+\begin{center}
+  \includegraphics{output_0_7.pdf}
+\end{center}
+
+Zbiór walidacyjny: Maksymalny błąd: 0.984808, średni błąd: 0.038473.\newline
+Sieć poprawnie rozpoznała 29/30 kwiatów.
+
+\subsubsection{Konfiguracja 4-4-4-4-3, 70000 epok}
+\begin{center}
+  \includegraphics{output_0_3.pdf}
+\end{center}
+\begin{center}
+  \includegraphics{output_0_4.pdf}
+\end{center}
 
 
+Zbiór walidacyjny: Maksymalny błąd: 0.997997, średni błąd: 0.064793.
+Sieć poprawnie rozpoznała 32/34 kwiatów.
 
-=== Attributes: 6.3 3.4 5.6 2.4 
-Expected: 0.000000, output: 0.010120
-Expected: 0.000000, output: 0.018502
-Expected: 1.000000, output: 0.984826
-\end{lstlisting}
-
-Sieci w tej konfiguracji udało się sklasyfikować 3/12 okazów. Należy jednak zwrócić uwagę na to, że sieć była pewna każdej oczekiwanej odpowiedzi w ponad 90%
-
-\subsubsection{Konfiguracja 4-4-3, 140000 epok}
-\begin{lstlisting}[]
-=== Attributes: 5.4 3.7 1.5 0.2 
-Expected: 1.000000, output: 0.995840
-Expected: 0.000000, output: 0.005799
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5.4 3.9 1.3 0.4 
-Expected: 1.000000, output: 0.995847
-Expected: 0.000000, output: 0.005785
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5 3 1.6 0.2 
-Expected: 1.000000, output: 0.995714
-Expected: 0.000000, output: 0.006027
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5.2 3.5 1.5 0.2 
-Expected: 1.000000, output: 0.995826
-Expected: 0.000000, output: 0.005824
-Expected: 0.000000, output: 0.000007
-=== Attributes: 4.9 3.1 1.5 0.1 
-Expected: 1.000000, output: 0.995785
-Expected: 0.000000, output: 0.005897
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5 3.3 1.4 0.2 
-Expected: 1.000000, output: 0.995818
-Expected: 0.000000, output: 0.005838
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5.6 3 4.5 1.5 
-Expected: 0.000000, output: 0.004205
-Expected: 1.000000, output: 0.999816
-Expected: 0.000000, output: 0.000018
-=== Attributes: 6.3 2.5 4.9 1.5      <= nierozpoznany kwiat
-Expected: 0.000000, output: 0.000010
-Expected: 1.000000, output: 0.039244
-Expected: 0.000000, output: 0.984793
-=== Attributes: 6.7 3 5 1.7 
-Expected: 0.000000, output: 0.002279
-Expected: 1.000000, output: 0.999397
-Expected: 0.000000, output: 0.000084
-
-
-=== Attributes: 6.3 3.3 6 2.5 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.003929
-Expected: 1.000000, output: 0.999221
-=== Attributes: 7.7 2.8 6.7 2 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.003929
-Expected: 1.000000, output: 0.999221
-=== Attributes: 6.4 2.8 5.6 2.2 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.003929
-Expected: 1.000000, output: 0.999221
-=== Attributes: 6.1 2.6 5.6 1.4 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.003931
-Expected: 1.000000, output: 0.999221
-=== Attributes: 6.9 3.1 5.4 2.1 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.004255
-Expected: 1.000000, output: 0.999137
-\end{lstlisting}
-
-Sieci w tej samej konfiguracji udało się sklasyfikować 13/14 okazów. Tym, co zasługuje w tej próbie na szczególną uwagę jest właśnie niesklasyfikowany przypadek - sieć oceniła wysoko możliwość przydziału do błędnej klasy.
-
-\subsubsection{Konfiguracja 4-7-3, 10000 epok}
-\begin{lstlisting}[basicstyle=\small]
-=== Attributes: 5.4 3.9 1.3 0.4 
-Expected: 1.000000, output: 0.991151
-Expected: 0.000000, output: 0.011152
-Expected: 0.000000, output: 0.000012
-=== Attributes: 5.2 3.4 1.4 0.2 
-Expected: 1.000000, output: 0.990839
-Expected: 0.000000, output: 0.011379
-Expected: 0.000000, output: 0.000012
-=== Attributes: 6.9 3.1 4.9 1.5 
-Expected: 0.000000, output: 0.011950
-Expected: 1.000000, output: 0.997761
-Expected: 0.000000, output: 0.001007
-=== Attributes: 6.3 3.3 4.7 1.6 
-Expected: 0.000000, output: 0.012261
-Expected: 1.000000, output: 0.997566
-Expected: 0.000000, output: 0.001118
-=== Attributes: 6 2.2 4 1 
-Expected: 0.000000, output: 0.012147
-Expected: 1.000000, output: 0.997714
-Expected: 0.000000, output: 0.000867
-
-
-
-=== Attributes: 5.6 2.5 3.9 1.1 
-Expected: 0.000000, output: 0.012488
-Expected: 1.000000, output: 0.997670
-Expected: 0.000000, output: 0.000868
-=== Attributes: 6 2.9 4.5 1.5 
-Expected: 0.000000, output: 0.012640
-Expected: 1.000000, output: 0.996556
-Expected: 0.000000, output: 0.001719
-=== Attributes: 5.5 2.6 4.4 1.2 
-Expected: 0.000000, output: 0.012176
-Expected: 1.000000, output: 0.991186
-Expected: 0.000000, output: 0.005115
-=== Attributes: 6.2 2.9 4.3 1.3 
-Expected: 0.000000, output: 0.012179
-Expected: 1.000000, output: 0.997802
-Expected: 0.000000, output: 0.000876
-=== Attributes: 6.5 3 5.8 2.2 
-Expected: 0.000000, output: 0.001779
-Expected: 0.000000, output: 0.001134
-Expected: 1.000000, output: 0.999491
-=== Attributes: 5.8 2.8 5.1 2.4 
-Expected: 0.000000, output: 0.001780
-Expected: 0.000000, output: 0.001130
-Expected: 1.000000, output: 0.999490
-=== Attributes: 6.4 2.8 5.6 2.1 
-Expected: 0.000000, output: 0.001773
-Expected: 0.000000, output: 0.001138
-Expected: 1.000000, output: 0.999484
-=== Attributes: 7.4 2.8 6.1 1.9 
-Expected: 0.000000, output: 0.001734
-Expected: 0.000000, output: 0.001206
-Expected: 1.000000, output: 0.999439
-=== Attributes: 7.9 3.8 6.4 2 
-Expected: 0.000000, output: 0.001455
-Expected: 0.000000, output: 0.011966
-Expected: 1.000000, output: 0.990354
-=== Attributes: 7.7 3 6.1 2.3 
-Expected: 0.000000, output: 0.001738
-Expected: 0.000000, output: 0.001209
-Expected: 1.000000, output: 0.999442
-=== Attributes: 6.7 3.3 5.7 2.5 
-Expected: 0.000000, output: 0.001765
-Expected: 0.000000, output: 0.001162
-Expected: 1.000000, output: 0.999475
-\end{lstlisting}
-
-Sieć rozpoznała wszystkie kwiaty w pierwszej próbie.
 \newpage
-\subsubsection{Konfiguracja 4-7-3, 140000 epok}
-\begin{lstlisting}[basicstyle=\small]
-=== Attributes: 5.4 3.7 1.5 0.2 
-Expected: 1.000000, output: 0.995840
-Expected: 0.000000, output: 0.005799
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5.4 3.9 1.3 0.4 
-Expected: 1.000000, output: 0.995847
-Expected: 0.000000, output: 0.005785
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5 3 1.6 0.2 
-Expected: 1.000000, output: 0.995714
-Expected: 0.000000, output: 0.006027
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5.2 3.5 1.5 0.2 
-Expected: 1.000000, output: 0.995826
-Expected: 0.000000, output: 0.005824
-Expected: 0.000000, output: 0.000007
-=== Attributes: 4.9 3.1 1.5 0.1 
-Expected: 1.000000, output: 0.995785
-Expected: 0.000000, output: 0.005897
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5 3.3 1.4 0.2 
-Expected: 1.000000, output: 0.995818
-Expected: 0.000000, output: 0.005838
-Expected: 0.000000, output: 0.000007
-=== Attributes: 5.6 3 4.5 1.5 
-Expected: 0.000000, output: 0.004205
-Expected: 1.000000, output: 0.999816
-Expected: 0.000000, output: 0.000018
-=== Attributes: 6.3 2.5 4.9 1.5      <= nierozpoznany kwiat
-Expected: 0.000000, output: 0.000010
-Expected: 1.000000, output: 0.039244
-Expected: 0.000000, output: 0.984793
-=== Attributes: 6.7 3 5 1.7 
-Expected: 0.000000, output: 0.002279
-Expected: 1.000000, output: 0.999397
-Expected: 0.000000, output: 0.000084
-=== Attributes: 6.3 3.3 6 2.5 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.003929
-Expected: 1.000000, output: 0.999221
-=== Attributes: 7.7 2.8 6.7 2 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.003929
-Expected: 1.000000, output: 0.999221
-=== Attributes: 6.4 2.8 5.6 2.2 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.003929
-Expected: 1.000000, output: 0.999221
-
-=== Attributes: 6.1 2.6 5.6 1.4 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.003931
-Expected: 1.000000, output: 0.999221
-=== Attributes: 6.9 3.1 5.4 2.1 
-Expected: 0.000000, output: 0.000003
-Expected: 0.000000, output: 0.004255
-Expected: 1.000000, output: 0.999137
-\end{lstlisting}
-
-Błędem sieci w tej konfiguracji jest ten sam reprezentant populacji irysów co w sieci "4-3-3/140000".
-
-\subsubsection{Konfiguracja 4-5-4-3, 10000 epok}
-\begin{lstlisting}[basicstyle=\small]
-=== Attributes: 5.7 4.4 1.5 0.4 
-Expected: 1.000000, output: 0.991547
-Expected: 0.000000, output: 0.014142
-Expected: 0.000000, output: 0.000008
-=== Attributes: 5 3.4 1.6 0.4 
-Expected: 1.000000, output: 0.991542
-Expected: 0.000000, output: 0.014193
-Expected: 0.000000, output: 0.000009
-=== Attributes: 4.7 3.2 1.6 0.2 
-Expected: 1.000000, output: 0.991534
-Expected: 0.000000, output: 0.014210
-Expected: 0.000000, output: 0.000009
-=== Attributes: 5.5 3.5 1.3 0.2 
-Expected: 1.000000, output: 0.991837
-Expected: 0.000000, output: 0.013771
-Expected: 0.000000, output: 0.000008
-=== Attributes: 5 3.5 1.3 0.3 
-Expected: 1.000000, output: 0.991713
-Expected: 0.000000, output: 0.013945
-Expected: 0.000000, output: 0.000008
-=== Attributes: 5.1 3.8 1.6 0.2 
-Expected: 1.000000, output: 0.991468
-Expected: 0.000000, output: 0.014281
-Expected: 0.000000, output: 0.000008
-=== Attributes: 4.9 2.4 3.3 1 
-Expected: 0.000000, output: 0.191314
-Expected: 1.000000, output: 0.804195
-Expected: 0.000000, output: 0.000211
-=== Attributes: 6.7 3 5 1.7 
-Expected: 0.000000, output: 0.000214
-Expected: 1.000000, output: 0.231048
-Expected: 0.000000, output: 0.759830
-=== Attributes: 5.7 2.6 3.5 1 
-Expected: 0.000000, output: 0.070457
-Expected: 1.000000, output: 0.921586
-Expected: 0.000000, output: 0.000432
-
-
-=== Attributes: 5.5 2.4 3.7 1 
-Expected: 0.000000, output: 0.005127
-Expected: 1.000000, output: 0.992765
-Expected: 0.000000, output: 0.001950
-=== Attributes: 5.7 3 4.2 1.2 
-Expected: 0.000000, output: 0.047576
-Expected: 1.000000, output: 0.943697
-Expected: 0.000000, output: 0.000454
-=== Attributes: 6.1 2.6 5.6 1.4 
-Expected: 0.000000, output: 0.000077
-Expected: 0.000000, output: 0.011492
-Expected: 1.000000, output: 0.985483
-=== Attributes: 6.4 3.1 5.5 1.8 
-Expected: 0.000000, output: 0.000078
-Expected: 0.000000, output: 0.011841
-Expected: 1.000000, output: 0.984676
-\end{lstlisting}
-
-Sieć w tej konfiguracji rozpoznała poprawnie 7/13 kwiatów.
-
-\subsubsection{Konfiguracja 4-5-4-3, 140000 epok}
-\begin{lstlisting}[basicstyle=\small]
-=== Attributes: 5.1 3.5 1.4 0.2 
-Expected: 1.000000, output: 0.997355
-Expected: 0.000000, output: 0.002485
-Expected: 0.000000, output: 0.000002
-=== Attributes: 4.7 3.2 1.3 0.2 
-Expected: 1.000000, output: 0.997342
-Expected: 0.000000, output: 0.002526
-Expected: 0.000000, output: 0.000002
-=== Attributes: 5.2 3.5 1.5 0.2 
-Expected: 1.000000, output: 0.997350
-Expected: 0.000000, output: 0.002502
-Expected: 0.000000, output: 0.000002
-=== Attributes: 5.1 3.8 1.9 0.4 
-Expected: 1.000000, output: 0.997331
-Expected: 0.000000, output: 0.002566
-Expected: 0.000000, output: 0.000002
-=== Attributes: 5 2 3.5 1 
-Expected: 0.000000, output: 0.003549
-Expected: 1.000000, output: 0.998728
-Expected: 0.000000, output: 0.000485
-=== Attributes: 6.8 2.8 4.8 1.4 
-Expected: 0.000000, output: 0.003446
-Expected: 1.000000, output: 0.998767
-Expected: 0.000000, output: 0.000493
-=== Attributes: 5.5 2.6 4.4 1.2 
-Expected: 0.000000, output: 0.003463
-Expected: 1.000000, output: 0.998760
-Expected: 0.000000, output: 0.000492
-
-
-
-=== Attributes: 6.3 3.3 6 2.5 
-Expected: 0.000000, output: 0.000504
-Expected: 0.000000, output: 0.000435
-Expected: 1.000000, output: 0.999513
-=== Attributes: 7.6 3 6.6 2.1 
-Expected: 0.000000, output: 0.000504
-Expected: 0.000000, output: 0.000435
-Expected: 1.000000, output: 0.999513
-=== Attributes: 6 2.2 5 1.5 
-Expected: 0.000000, output: 0.000504
-Expected: 0.000000, output: 0.000435
-Expected: 1.000000, output: 0.999513
-=== Attributes: 5.9 3 5.1 1.8 
-Expected: 0.000000, output: 0.000504
-Expected: 0.000000, output: 0.000435
-Expected: 1.000000, output: 0.999513
-\end{lstlisting}
-
-Sieć w tej konfiguracji rozpoznała poprawnie wszystkie kwiaty.
-\subsection{Konfiguracja 4-4-4-4-3, 10000 epok}
-\begin{lstlisting}[basicstyle=\small]
-=== Attributes: 4.9 3 1.4 0.2 
-Expected: 1.000000, output: 0.289672
-Expected: 0.000000, output: 0.387226
-Expected: 0.000000, output: 0.322644
-=== Attributes: 5 3.6 1.4 0.2 
-Expected: 1.000000, output: 0.289696
-Expected: 0.000000, output: 0.387230
-Expected: 0.000000, output: 0.322672
-=== Attributes: 5.7 4.4 1.5 0.4 
-Expected: 1.000000, output: 0.289730
-Expected: 0.000000, output: 0.387237
-Expected: 0.000000, output: 0.322712
-=== Attributes: 5.1 3.8 1.5 0.3 
-Expected: 1.000000, output: 0.289707
-Expected: 0.000000, output: 0.387232
-Expected: 0.000000, output: 0.322685
-=== Attributes: 5.1 3.7 1.5 0.4 
-Expected: 1.000000, output: 0.289706
-Expected: 0.000000, output: 0.387232
-Expected: 0.000000, output: 0.322683
-=== Attributes: 4.7 3.2 1.6 0.2 
-Expected: 1.000000, output: 0.289672
-Expected: 0.000000, output: 0.387226
-Expected: 0.000000, output: 0.322644
-=== Attributes: 4.9 3.1 1.5 0.1 
-Expected: 1.000000, output: 0.289678
-Expected: 0.000000, output: 0.387227
-Expected: 0.000000, output: 0.322651
-=== Attributes: 4.4 3 1.3 0.2 
-Expected: 1.000000, output: 0.289625
-Expected: 0.000000, output: 0.387216
-Expected: 0.000000, output: 0.322590
-=== Attributes: 6.1 3 4.6 1.4 
-Expected: 0.000000, output: 0.289739
-Expected: 1.000000, output: 0.387239
-Expected: 0.000000, output: 0.322722
-=== Attributes: 5 2.3 3.3 1 
-Expected: 0.000000, output: 0.289698
-Expected: 1.000000, output: 0.387234
-Expected: 0.000000, output: 0.322673
-=== Attributes: 6.3 3.3 6 2.5 
-Expected: 0.000000, output: 0.289744
-Expected: 0.000000, output: 0.387240
-Expected: 1.000000, output: 0.322728
-=== Attributes: 6.3 3.4 5.6 2.4 
-Expected: 0.000000, output: 0.289743
-Expected: 0.000000, output: 0.387240
-Expected: 1.000000, output: 0.322727
-=== Attributes: 6.9 3.1 5.4 2.1 
-Expected: 0.000000, output: 0.289745
-Expected: 0.000000, output: 0.387240
-Expected: 1.000000, output: 0.322729
-=== Attributes: 6.5 3 5.2 2 
-Expected: 0.000000, output: 0.289743
-Expected: 0.000000, output: 0.387240
-Expected: 1.000000, output: 0.322727
-\end{lstlisting}
-
-Sieć w tej konfiguracji ani razu nie zbliżyła się do poprawnej odpowiedzi.
-\subsubsection{Konfiguracja 4-4-4-4-3, 140000 epok}
-\begin{lstlisting}[basicstyle=\small]
-=== Attributes: 5.1 3.5 1.4 0.2 
-Expected: 1.000000, output: 0.997355
-Expected: 0.000000, output: 0.002485
-Expected: 0.000000, output: 0.000002
-=== Attributes: 4.7 3.2 1.3 0.2 
-Expected: 1.000000, output: 0.997342
-Expected: 0.000000, output: 0.002526
-Expected: 0.000000, output: 0.000002
-=== Attributes: 5.2 3.5 1.5 0.2 
-Expected: 1.000000, output: 0.997350
-Expected: 0.000000, output: 0.002502
-Expected: 0.000000, output: 0.000002
-=== Attributes: 5.1 3.8 1.9 0.4 
-Expected: 1.000000, output: 0.997331
-Expected: 0.000000, output: 0.002566
-Expected: 0.000000, output: 0.000002
-=== Attributes: 5 2 3.5 1 
-Expected: 0.000000, output: 0.003549
-Expected: 1.000000, output: 0.998728
-Expected: 0.000000, output: 0.000485
-=== Attributes: 6.8 2.8 4.8 1.4 
-Expected: 0.000000, output: 0.003446
-Expected: 1.000000, output: 0.998767
-Expected: 0.000000, output: 0.000493
-=== Attributes: 5.5 2.6 4.4 1.2 
-Expected: 0.000000, output: 0.003463
-Expected: 1.000000, output: 0.998760
-Expected: 0.000000, output: 0.000492
-
-
-
-=== Attributes: 6.3 3.3 6 2.5 
-Expected: 0.000000, output: 0.000504
-Expected: 0.000000, output: 0.000435
-Expected: 1.000000, output: 0.999513
-=== Attributes: 7.6 3 6.6 2.1 
-Expected: 0.000000, output: 0.000504
-Expected: 0.000000, output: 0.000435
-Expected: 1.000000, output: 0.999513
-=== Attributes: 6 2.2 5 1.5 
-Expected: 0.000000, output: 0.000504
-Expected: 0.000000, output: 0.000435
-Expected: 1.000000, output: 0.999513
-=== Attributes: 5.9 3 5.1 1.8 
-Expected: 0.000000, output: 0.000504
-Expected: 0.000000, output: 0.000435
-Expected: 1.000000, output: 0.999513
-\end{lstlisting}
-
-Sieć w tej Konfiguracji rozpoznała wszystkie kwiaty.
-
 \section{Wnioski}
-Perceptron wielowarstwowy może z powodzeniem służyć jako klasyfikator irysów, do realizacji tego zadania potrzeba skonfigurować sieć z przynajmniej jedną warstwą ukrytą. Proces bezbłędnej klasyfikacji przebiegł najszybciej dla modelu "4-7-3/10000".
-
-
-Można zauważyć ciekawą zależność - Irys o atrybutach 6.3 2.5 4.9 1.5 stanowił problem dla sieci trenowanych przez 140000 iteracji. Ponadto, najbliżej poprawnej klasyfikacji była sieć "4-3-3/10000".
+Perceptron wielowarstwowy może z powodzeniem służyć jako klasyfikator irysów. Do realizacji tego zadania potrzeba skonfigurować sieć z przynajmniej jedną warstwą ukrytą - i ta ukryta warstwa w zupełności wystarcza.
 \begin{thebibliography}{0}
   \bibitem{l2short}
     \textsl{http://archive.ics.uci.edu/ml/datasets/Iris}

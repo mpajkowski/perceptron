@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 
 Application::Application(int argc, char* argv[])
     : trainingEpochs{1000}
@@ -20,7 +21,7 @@ Application::Application(int argc, char* argv[])
 void Application::init(int argc, char* argv[])
 {
     double momentum = .9;
-    double learnF = .1;
+    double learnF = .01;
     bool biasPresent = false;
 
     namespace po = boost::program_options;
@@ -101,47 +102,70 @@ Application::~Application()
 
 void Application::runNetwork(bool learning)
 {
-    // TODO refactor to runNetworkInternal und runNetwork
     if (learning) {
         size_t i = 0;
         logger->setItCounter(&i);
+
         for (; i < trainingEpochs; ++i) {
+            std::ostringstream os;
+            os << i << ",";
+
             if (logger->isVerbose()) {
                 logger->addToStream({"Iteration " + std::to_string(i)});
             }
 
-            auto timeToLearn = static_cast<bool>(i % probingFreq);
-
-            auto& input  = timeToLearn ? inputLearn  : inputTest;
-            auto& output = timeToLearn ? outputLearn : outputTest;
-
-            std::vector<size_t> indexes(input.size());
+            std::vector<size_t> indexes(inputLearn.size());
             std::iota(std::begin(indexes), std::end(indexes), 0);
+            std::shuffle(std::begin(indexes), std::end(indexes), rng);
 
-            if (likely(timeToLearn)) {
-                std::shuffle(std::begin(indexes), std::end(indexes), rng);
-            }
-
-            double err = .0;
-
+            double maxTrainingErr = .0;
+            double sumTrainingErr = .0;
             for (size_t j = 0; j < indexes.size(); ++j) {
-                err = net->run(input[indexes[j]],
-                               output[indexes[j]],
-                               timeToLearn);
+                double err = net->run(inputLearn[indexes[j]],
+                                      outputLearn[indexes[j]],
+                                      Net::Mode::LEARN);
+                if (err > maxTrainingErr) {
+                    maxTrainingErr = err; 
+                }
+                sumTrainingErr += err;
             }
 
-            logger->addToStream({std::to_string(i) +
-            "," + std::to_string(err)});
+            double avgTrainingErr = sumTrainingErr / indexes.size();
+            os << maxTrainingErr << "," << avgTrainingErr << ",";
+
+            double maxTestErr = .0;
+            double sumTestErr = .0;
+            for (size_t j = 0; j < inputTest.size(); ++j) {
+                double err = net->run(inputTest[j],
+                                      outputTest[j],
+                                      Net::Mode::TEST);
+                if (err > maxTestErr) {
+                    maxTestErr = err;
+                }
+            }
+
+            double avgTestErr = maxTestErr / inputTest.size();
+            os << maxTestErr << "," << avgTestErr;
+
+            logger->addToStream(os.str());
         }
     } else {
-        double err = .0;
+        logger->setItCounter(nullptr);
         logger->addToStream({"Validation!"});
+
+        double maxValidateErr = .0;
+        double sumValidateErr = .0;
         for (size_t i = 0; i < inputValidate.size(); ++i) {
-            err = net->run(inputValidate[i],
-                           outputValidate[i],
-                           false);
+            double err = net->run(inputValidate[i],
+                                  outputValidate[i],
+                                  Net::Mode::VALIDATE);
+            if (err > maxValidateErr) {
+                maxValidateErr = err;
+            }
+            sumValidateErr += err;
         }
-        logger->addToStream({"Error: " + std::to_string(err)});
+        logger->addToStream({"Max epoch error: " + std::to_string(maxValidateErr)});
+        logger->addToStream({"Avg epoch error: " + std::to_string(sumValidateErr / inputValidate.size())});
     }
 }
 

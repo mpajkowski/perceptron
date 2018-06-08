@@ -37,23 +37,24 @@ void Net::forwardPropagation()
         auto& currLayer = layers[i];
         auto& prevLayer = layers[i - 1];
 
-        for (size_t j = 0; j < currLayer.size(); ++j) {
+        for (auto& currLayerNeuron : currLayer) {
             double sum = .0;
 
             for (size_t k = 0; k < prevLayer.size(); ++k) {
-               sum += prevLayer[k].output * currLayer[j].weights[k];
+               sum += prevLayer[k].output * currLayerNeuron.weights[k];
             }
 
             if (biasPresent) {
-                sum += currLayer[j].biasWeight;
+                sum += currLayerNeuron.biasWeight;
             }
 
-            currLayer[j].output = sigmoid::function(sum);
+            currLayerNeuron.output = sigmoid::function(sum);
         }
     }
 }
 
-double Net::calculateOutputError(std::vector<double> const& trainingSet)
+double Net::calculateOutputError(std::vector<double> const& trainingSet,
+                                 Mode mode)
 {
     double globalError = .0;
     auto& outputLayer = layers.back();
@@ -61,7 +62,7 @@ double Net::calculateOutputError(std::vector<double> const& trainingSet)
         double const& output = outputLayer[i].output;
         double localError = trainingSet[i] - output;
 
-        if (logger.isVerbose()) {
+        if (logger.isVerbose() || mode == Mode::VALIDATE) {
             logger.addToStream({"Expected: " + std::to_string(trainingSet[i])
                 + ", output: " + std::to_string(output)});
         }
@@ -104,8 +105,8 @@ void Net::updateNeurons()
             for (size_t k = 0; k < prevLayer.size(); ++k) {
                 currLayer[j].weights[k] += learnF
                                          * currLayer[j].error
-                                         * prevLayer[k].output;
-                currLayer[j].weights[k] += momentum
+                                         * prevLayer[k].output 
+                                         + momentum
                                          * currLayer[j].pWeights[k];
                 currLayer[j].pWeights[k] = learnF
                                          * currLayer[j].error
@@ -123,30 +124,30 @@ void Net::updateNeurons()
 
 double Net::run(std::vector<double> const& input,
                 std::vector<double> const& output,
-                bool train)
+                Mode mode)
 {
     std::ostringstream attributes;
 
-    if (logger.isVerbose()) {
+    if (logger.isVerbose() || mode == Mode::VALIDATE) {
         attributes << "=== Attributes: ";
     }
 
     for (size_t i = 0; i < input.size(); ++i) {
         layers[0][i].output = input[i];
-        if (logger.isVerbose()) {
+        if (logger.isVerbose() || mode == Mode::VALIDATE) {
             attributes << input[i] << " ";
         }
     }
 
-    if (logger.isVerbose()) {
+    if (logger.isVerbose() || mode == Mode::VALIDATE) {
         logger.addToStream(attributes.str());
     }
 
     forwardPropagation();
 
-    double globalError = calculateOutputError(output);
+    double globalError = calculateOutputError(output, mode);
 
-    if (likely(train)) {
+    if (mode == Mode::LEARN) {
         backPropagation();
         updateNeurons();
     }

@@ -16,21 +16,25 @@ public:
         std::vector<size_t> const& layerConfiguration,
         std::mt19937& rng,
         Logger& logger);
+    enum class Mode : std::uint32_t {
+        LEARN,
+        TEST,
+        VALIDATE
+    };
     double run(std::vector<double> const& input,
                std::vector<double> const& output,
-               bool train);
+               Mode mode);
 private:
     void init(int argc, char* argv[]);
     void populateLayers(std::vector<size_t> const& layerConfiguration);
     void forwardPropagation();
-    double calculateOutputError(std::vector<double> const& trainingSet);
+    double calculateOutputError(std::vector<double> const& trainingSet, Mode mode);
     void backPropagation();
     void updateNeurons();
 
     bool biasPresent;
     double momentum;
     double learnF;
-    double globalError;
     std::vector<layer_t> layers;
     std::mt19937& rng;
     Logger& logger;
